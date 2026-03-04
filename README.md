@@ -120,22 +120,6 @@ Chạy trực tiếp không cần menu (chế độ tự động):
 ```
 ├── MAS_AIO.cmd          # Script chính (19K+ dòng) - Batch/CMD
 ├── MAS_worker.js        # Cloudflare Worker cho get.tuancute.com
-│                        #   - Route /cmd: proxy MAS_AIO.cmd
-│                        #   - Route PowerShell: loader với UI
-│                        #   - Route HTML: trang landing page
-├── cloudflarework.bat   # Cloudflare Worker cho idm.tuancute.com
-│                        #   - Route /batch: IDM activation batch
-│                        #   - Route PowerShell: IDM loader
-│                        #   - Route HTML: trang IDM
-├── IASL.cmd             # IDM Activation standalone (offline)
-│                        #   Dùng với thư mục src/
-├── src/                 # Tài nguyên IDM activation
-│   ├── banner_art.txt   # ASCII banner
-│   ├── data.bin         # IDM executable patch
-│   ├── dataHlp.bin      # IDM helper patch
-│   ├── registry.bin     # Registry entries
-│   └── extensions.bin   # File extensions registration
-└── dung/                # Bản sao lưu (backup)
 ```
 
 ---
