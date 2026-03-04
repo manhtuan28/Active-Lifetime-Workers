@@ -525,3 +525,4 @@ document.querySelectorAll('.nav a[href^="#"]').forEach(a=>{
     });
   }
 };
+
