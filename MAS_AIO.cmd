@@ -3,12 +3,15 @@
 @::Is a real person even the one deciding to flag this or is it Copilot told to flag anything it decides not to like?
 @::If a campaign is using this script as a cover, please flag parts of the campaign instead of the script. This isn't the first time we experienced collateral damage due to campaigns completely unrelated to us.
 @::If you disagree that MAS is not malicious, we would appreciate if you contacted us to explain what constitutes MAS as "Sonbokli" and we'll look into it. Thank you. 
-@set masver=3.10
+@set masver=3.11
 @setlocal DisableDelayedExpansion
 @echo off
 
+
+
 ::  For command line switches, check m{}assgrave{dot}dev/command_line_switches
 ::  If you want to better understand script, read from separate files version. 
+
 
 
 ::============================================================================
@@ -16,6 +19,7 @@
 ::   Homepage: m{}assgrave{dot}dev
 ::
 ::============================================================================
+
 
 
 ::========================================================================================================================================
@@ -78,7 +82,7 @@ echo:
 echo Dich vu Null khong chay, script co the bi loi...
 echo:
 echo:
-echo Check this webpage for help - %mas%fix_service
+echo Xem trang ho tro tai - %mas%fix_service
 echo:
 echo:
 ping 127.0.0.1 -n 20
@@ -225,7 +229,7 @@ goto dk_done
 
 ::pstst $ExecutionContext.SessionState.LanguageMode :pstst
 
-for /f "delims=" %%a in ('%psc% "if ($PSVersionTable.PSEdition -ne 'Core') {$f=[System.IO.File]::ReadAllText('!_batp!') -split ':pstst';. ([scriptblock]::Create($f[1]))}" %nul6%') do (set tstresult=%%a)
+for /f "delims=" %%a in ('%psc% "if ($PSVersionTable.PSEdition -ne 'Core') {$f=[IO.File]::ReadAllText('!_batp!') -split ':pstst';. ([scriptblock]::Create($f[1]))}" %nul6%') do (set tstresult=%%a)
 
 if /i not "%tstresult%"=="FullLanguage" (
 %eline%
@@ -485,7 +489,7 @@ echo:             [H] Tro giup
 echo:             [0] Thoat
 echo:       ______________________________________________________________
 echo:
-call :dk_color2 %_White% "         " %_Green% "Chon tuy chon bang ban phim [1,2,...9,T,E,H,0] :"
+call :dk_color2 %_White% "         " %_Green% "Choose a menu option using your keyboard [1,2,...9,T,E,H,0] :"
 choice /C:123456789TEH0 /N
 set _erl=%errorlevel%
 
@@ -495,6 +499,16 @@ if %_erl%==11 goto :Extras
 if %_erl%==10 setlocal & call :troubleshoot      & cls & endlocal & goto :MainMenu
 if %_erl%==9 setlocal & call :WinRARActivation  & cls & endlocal & goto :MainMenu
 if %_erl%==8 setlocal & call :IDMActivation     & cls & endlocal & goto :MainMenu
+if %_erl%==7 setlocal & call :change_offedition & cls & endlocal & goto :MainMenu
+if %_erl%==6 setlocal & call :change_winedition & cls & endlocal & goto :MainMenu
+if %_erl%==5 setlocal & call :check_actstatus   & cls & endlocal & goto :MainMenu
+if %_erl%==4 setlocal & call :KMSActivation     & cls & endlocal & goto :MainMenu
+if %_erl%==3 setlocal & call :TSforgeActivation & cls & endlocal & goto :MainMenu
+if %_erl%==2 setlocal & call :OhookActivation   & cls & endlocal & goto :MainMenu
+if %_erl%==1 setlocal & call :HWIDActivation    & cls & endlocal & goto :MainMenu
+goto :MainMenu
+if %_erl%==9 goto :Extras
+if %_erl%==8 setlocal & call :troubleshoot      & cls & endlocal & goto :MainMenu
 if %_erl%==7 setlocal & call :change_offedition & cls & endlocal & goto :MainMenu
 if %_erl%==6 setlocal & call :change_winedition & cls & endlocal & goto :MainMenu
 if %_erl%==5 setlocal & call :check_actstatus   & cls & endlocal & goto :MainMenu
@@ -513,6 +527,7 @@ echo %esc%[%~1%~2%esc%[%~3%~4%esc%[%~5%~6%esc%[0m
 )
 exit /b
 
+::========================================================================================================================================
 ::========================================================================================================================================
 
 :IDMActivation
@@ -1036,7 +1051,6 @@ echo  Nhan phim bat ky de quay lai...
 pause %nul1%
 exit /b
 
-::========================================================================================================================================
 
 :Extras
 
@@ -1066,6 +1080,8 @@ if %_erl%==3 goto :MainMenu
 if %_erl%==2 start %mas%genuine-installation-media & goto :Extras
 if %_erl%==1 goto :Extract$OEM$
 goto :Extras
+
+::========================================================================================================================================
 
 ::========================================================================================================================================
 
@@ -1179,7 +1195,7 @@ set _NoEditionChange=0
 
 cls
 color 07
-title  Kich hoat HWID %masver%
+title  HWID Activation %masver%
 
 set _args=
 set _elev=
@@ -1201,16 +1217,16 @@ for %%A in (%_act% %_NoEditionChange%) do (if "%%A"=="1" set _unattended=1)
 
 if %winbuild% LSS 10240 (
 %eline%
-echo Phat hien phien ban OS khong ho tro [%winbuild%].
-echo Kich hoat HWID chi ho tro tren Windows 10/11.
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge tu menu chinh."
+echo Unsupported OS version detected [%winbuild%].
+echo HWID Activation is only supported on Windows 10/11.
+call :dk_color %Blue% "Use TSforge activation option from the main menu."
 goto dk_done
 )
 
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
 %eline%
-echo Kich hoat HWID khong ho tro tren Windows Server.
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge tu menu chinh."
+echo HWID Activation is not supported on Windows Server.
+call :dk_color %Blue% "Use TSforge activation option from the main menu."
 goto dk_done
 )
 
@@ -1223,10 +1239,10 @@ if not defined terminal (
 mode 110, 34
 if exist "%SysPath%\spp\store_test\" mode 134, 34
 )
-title  Kich hoat HWID %masver%
+title  HWID Activation %masver%
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 call :dk_chkmal
 
 for %%# in (
@@ -1235,13 +1251,13 @@ ClipUp.exe
 ) do (
 if not exist %SysPath%\%%# (
 %eline%
-echo [%SysPath%\%%#] tep bi thieu, dang huy...
+echo [%SysPath%\%%#] file is missing, aborting...
 echo:
 if not defined results (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay DISM Restore va SFC Scan."
-call :dk_color %Blue% "Sau do, khoi dong lai he thong va thu kich hoat lai."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run DISM Restore and SFC Scan options."
+call :dk_color %Blue% "After that, restart system and try activation again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu van gap loi nay, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If it still shows the same error, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -1266,11 +1282,11 @@ if defined _perm (
 cls
 echo ___________________________________________________________________________________________
 echo:
-call :dk_color2 %_White% "     " %Green% "%winos% da duoc kich hoat vinh vien."
+call :dk_color2 %_White% "     " %Green% "%winos% is already permanently activated."
 echo ___________________________________________________________________________________________
 if %_unattended%==1 goto dk_done
 echo:
-choice /C:10 /N /M ">    [1] Kich hoat [0] %_exitmsg% : "
+choice /C:10 /N /M ">    [1] Activate Anyway [0] %_exitmsg% : "
 if errorlevel 2 exit /b
 )
 cls
@@ -1284,10 +1300,10 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID %nul2
 %eline%
 echo [%winos% ^| %winbuild%]
 echo:
-echo Phien ban danh gia khong the kich hoat ngoai thoi gian danh gia.
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge de dat lai thoi gian danh gia."
+echo Evaluation editions cannot be activated outside of their evaluation period.
+call :dk_color %Blue% "Use TSforge activation option from the main menu to reset evaluation period."
 set fixes=%fixes% %mas%evaluation_editions
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%evaluation_editions"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%evaluation_editions"
 goto dk_done
 )
 )
@@ -1313,16 +1329,16 @@ if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo Kiem tra ket noi Internet               [Da ket noi%ping_f%]
+echo Checking Internet Connection            [Connected%ping_f%]
 ) else (
 set error=1
-call :dk_color %Red% "Kiem tra ket noi Internet               [Khong ket noi]"
-call :dk_color %Blue% "Can ket noi Internet de kich hoat HWID."
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Internet is required for HWID activation."
 )
 
 ::========================================================================================================================================
 
-echo Dang bat dau kiem tra chan doan...
+echo Initiating Diagnostic Tests...
 
 set "_serv=ClipSVC wlidsvc sppsvc KeyIso LicenseManager Winmgmt"
 
@@ -1349,7 +1365,7 @@ set notworking=
 call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 if defined allapps call :hwiddata key
 if not defined key (
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':getactivationid\:.*';. ([scriptblock]::Create($f[1]))"') do (set altapplist=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getactivationid\:.*';. ([scriptblock]::Create($f[1]))"') do (set altapplist=%%a)
 if defined altapplist call :hwiddata key
 )
 
@@ -1359,22 +1375,22 @@ if not defined key call :hwidfallback
 if defined altkey (set key=%altkey%&set changekey=1&set notworking=)
 
 if defined notworking if defined notfoundaltactID (
-call :dk_color %Red% "Kiem tra phien ban thay the cho HWID    [%altedition% Khong tim thay ID kich hoat]"
+call :dk_color %Red% "Checking Alternate Edition For HWID     [%altedition% Activation ID Not Found]"
 )
 
 if not defined key (
 %eline%
 echo [%winos% ^| %winbuild% ^| SKU:%osSKU%]
 if not defined skunotfound (
-echo San pham nay khong ho tro kich hoat HWID.
-echo Dam bao ban dang su dung phien ban moi nhat cua script.
-echo Neu dung roi, thu tuy chon kich hoat TSforge tu menu chinh.
+echo This product does not support HWID activation.
+echo Make sure you are using the latest version of the script.
+echo If you are, then try TSforge activation option from the main menu.
 set fixes=%fixes% %mas%
 echo %mas%
 ) else (
-echo Khong tim thay file ban quyen can thiet trong %SysPath%\spp\tokens\skus\
+echo Required license files not found in %SysPath%\spp\tokens\skus\
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 echo:
 goto dk_done
@@ -1388,12 +1404,12 @@ if defined notworking set error=1
 
 echo:
 if defined changekey (
-call :dk_color %Blue% "Khoa san pham phien ban [%altedition%] se duoc su dung de kich hoat HWID."
+call :dk_color %Blue% "[%altedition%] edition product key will be used to enable HWID activation."
 echo:
 )
 
 if defined winsub (
-call :dk_color %Blue% "Phat hien Windows Subscription [SKU ID-%slcSKU%]. Script se kich hoat phien ban goc [SKU ID-%regSKU%]."
+call :dk_color %Blue% "Windows Subscription [SKU ID-%slcSKU%] detected. Script will activate base edition [SKU ID-%regSKU%]."
 echo:
 )
 
@@ -1415,9 +1431,9 @@ for %%# in (US CN IN BR DE JP GB FR MX ID IT PK TR KR CA ES AU NG VN PL PH NL EG
 if defined regionchange (
 %psc% "Set-WinHomeLocation -GeoId 244" %nul%
 if !errorlevel! EQU 0 (
-echo Doi vung Windows sang USA               [Thanh cong] [Script se doi lai sau]
+echo Changing Windows Region To USA          [Successful] [Script will change it back]
 ) else (
-call :dk_color %Red% "Doi vung Windows sang USA               [That bai]"
+call :dk_color %Red% "Changing Windows Region To USA          [Failed]"
 )
 )
 
@@ -1439,12 +1455,12 @@ call :hwiddata ticket
 copy /y /b "%tdir%\GenuineTicket" "%tdir%\GenuineTicket.xml" %nul%
 
 if not exist "%tdir%\GenuineTicket.xml" (
-call :dk_color %Red% "Tao GenuineTicket.xml                   [That bai, dang huy...]"
+call :dk_color %Red% "Generating GenuineTicket.xml            [Failed, aborting...]"
 echo [%encoded%]
 if exist "%tdir%\Genuine*" del /f /q "%tdir%\Genuine*" %nul%
 goto :dl_final
 ) else (
-echo Tao GenuineTicket.xml                   [Thanh cong]
+echo Generating GenuineTicket.xml            [Successful]
 )
 
 set "_xmlexist=if exist "%tdir%\GenuineTicket.xml""
@@ -1457,7 +1473,7 @@ set "_xmlexist=if exist "%tdir%\GenuineTicket.xml""
 %_xmlexist% (
 set error=1
 if exist "%tdir%\*.xml" del /f /q "%tdir%\*.xml" %nul%
-call :dk_color %Gray% "Cai dat GenuineTicket.xml               [That bai voi ClipSVC, cho...]"
+call :dk_color %Gray% "Installing GenuineTicket.xml            [Failed with ClipSVC service restart, wait...]"
 )
 )
 
@@ -1469,19 +1485,19 @@ set rebuildinfo=
 if not exist %ProgramData%\Microsoft\Windows\ClipSVC\tokens.dat (
 set error=1
 set rebuildinfo=1
-call :dk_color %Red% "Kiem tra ClipSVC tokens.dat             [Khong tim thay]"
+call :dk_color %Red% "Checking ClipSVC tokens.dat             [Not Found]"
 )
 
 %_xmlexist% (
 set error=1
 set rebuildinfo=1
-call :dk_color %Red% "Cai dat GenuineTicket.xml               [That bai voi clipup -v -o]"
+call :dk_color %Red% "Installing GenuineTicket.xml            [Failed With clipup -v -o]"
 )
 
 if exist "%ProgramData%\Microsoft\Windows\ClipSVC\Install\Migration\*.xml" (
 set error=1
 set rebuildinfo=1
-call :dk_color %Red% "Kiem tra Ticket Migration               [That bai]"
+call :dk_color %Red% "Checking Ticket Migration               [Failed]"
 )
 
 if not defined altapplist if not defined showfix if defined rebuildinfo (
@@ -1497,13 +1513,13 @@ if exist "%tdir%\Genuine*" del /f /q "%tdir%\Genuine*" %nul%
 call :dk_product
 
 echo:
-echo Dang kich hoat...
+echo Activating...
 
 call :dk_act
 call :dk_checkperm
 if defined _perm (
 echo:
-call :dk_color %Green% "%winos% da duoc kich hoat vinh vien bang giay phep ky thuat so."
+call :dk_color %Green% "%winos% is permanently activated with a digital license."
 goto :dl_final
 )
 
@@ -1523,7 +1539,7 @@ call :dk_checkperm
 reg query "%_ident%" %nul% || (
 set error=1
 echo:
-call :dk_color %Red% "Tao moi IdentityCRL Registry            [That bai] [%_ident%]"
+call :dk_color %Red% "Generating New IdentityCRL Registry     [Failed] [%_ident%]"
 )
 )
 
@@ -1556,9 +1572,9 @@ licensing.mp.microsoft.com
 ) do (
 findstr /i "%%#" "%SysPath%\drivers\etc\hosts" %nul1% && set "hosfail= [%%# Blocked in Hosts]"
 )
-call :dk_color %Red% "Kiem tra may chu ban quyen              [Khong the ket noi]!hosfail!"
+call :dk_color %Red% "Checking Licensing Servers              [Failed to Connect]!hosfail!"
 set fixes=%fixes% %mas%licensing-servers-issue
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%licensing-servers-issue"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%licensing-servers-issue"
 echo:
 )
 
@@ -1571,15 +1587,15 @@ if %keyerror% EQU 0 if not defined _perm if defined _int (
 reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v DisableWindowsUpdateAccess %nul2% | find /i "0x1" %nul% && set wublock=1
 reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v DoNotConnectToWindowsUpdateInternetLocations %nul2% | find /i "0x1" %nul% && set wublock=1
 if defined wublock (
-call :dk_color %Red% "Kiem tra chan cap nhat trong Registry    [Tim thay]"
-call :dk_color %Blue% "Kich hoat HWID can Windows Update hoat dong, neu ban da chan cap nhat, hay go bo."
+call :dk_color %Red% "Checking Update Blocker In Registry     [Found]"
+call :dk_color %Blue% "HWID activation needs working Windows updates, if you have used any tool to block updates, undo it."
 echo:
 )
 
 reg query "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /v DisableStoreApps %nul2% | find /i "0x1" %nul% && (
 set storeblock=1
-call :dk_color %Red% "Kiem tra chan Store trong Registry       [Tim thay]"
-call :dk_color %Blue% "Neu ban da chan Store, hay go bo."
+call :dk_color %Red% "Checking Store Blocker In Registry      [Found]"
+call :dk_color %Blue% "If you have used any tool to block Store, undo it."
 echo:
 )
 
@@ -1594,14 +1610,14 @@ reg query HKLM\SYSTEM\CurrentControlSet\Services\wuauserv\%%G %nul% || (set wuco
 
 if defined wucorrupt (
 set error=1
-call :dk_color %Red% "Kiem tra Windows Update Registry        [Tim thay loi]"
+call :dk_color %Red% "Checking Windows Update Registry        [Corruption Found]"
 if !wcount! GTR 2 (
-call :dk_color %Red% "Windows co ve da bi nhiem phan mem doc hai."
+call :dk_color %Red% "Windows seems to be infected with Mal%w%ware."
 set fixes=%fixes% %mas%remove_mal%w%ware
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%remove_mal%w%ware"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%remove_mal%w%ware"
 echo:
 ) else (
-call :dk_color %Blue% "Kich hoat HWID can Windows Update hoat dong, neu ban da chan cap nhat, hay go bo."
+call :dk_color %Blue% "HWID activation needs working Windows updates, if you have used any tool to block updates, undo it."
 echo:
 )
 ) else (
@@ -1610,8 +1626,8 @@ sc query wuauserv | find /i "RUNNING" %nul% || (
 set error=1
 set wuerror=1
 sc start wuauserv %nul%
-call :dk_color %Red% "Khoi dong dich vu Windows Update        [That bai] [!errorlevel!]"
-call :dk_color %Blue% "Kich hoat HWID can Windows Update hoat dong, neu ban da chan cap nhat, hay go bo."
+call :dk_color %Red% "Starting Windows Update Service         [Failed] [!errorlevel!]"
+call :dk_color %Blue% "HWID activation needs working Windows updates, if you have used any tool to block updates, undo it."
 echo:
 )
 )
@@ -1624,9 +1640,9 @@ echo:
 if %keyerror% EQU 0 if not defined _perm if defined _int (
 if not defined wucorrupt if not defined wublock if not defined wuerror if not defined storeblock if not defined resfail (
 echo "%error_code%" | findstr /i "0x80072e 0x80072f 0x800704cf 0x87e10bcf 0x800705b4" %nul% && (
-call :dk_color %Red% "Kiem tra van de Internet                [Tim thay] %error_code%"
+call :dk_color %Red% "Checking Internet Issues                [Found] %error_code%"
 set fixes=%fixes% %mas%licensing-servers-issue
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%licensing-servers-issue"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%licensing-servers-issue"
 echo:
 )
 )
@@ -1636,16 +1652,16 @@ echo:
 
 echo:
 if defined _perm (
-call :dk_color %Green% "%winos% da duoc kich hoat vinh vien bang giay phep ky thuat so."
+call :dk_color %Green% "%winos% is permanently activated with a digital license."
 ) else (
-call :dk_color %Red% "Kich hoat that bai %error_code%"
+call :dk_color %Red% "Activation Failed %error_code%"
 if defined notworking (
-call :dk_color %Blue% "Hien tai, kich hoat HWID khong duoc ho tro cho san pham nay."
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge tu menu chinh."
+call :dk_color %Blue% "At the time of writing, HWID Activation is not supported for this product."
+call :dk_color %Blue% "Use TSforge activation option from the main menu instead."
 ) else (
 if not defined error call :dk_color %Blue% "%_fixmsg%"
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 )
 
@@ -1658,13 +1674,13 @@ echo:
 if defined regionchange (
 %psc% "Set-WinHomeLocation -GeoId %nation%" %nul%
 if !errorlevel! EQU 0 (
-echo Khoi phuc vung Windows                  [Thanh cong]
+echo Restoring Windows Region                [Successful]
 ) else (
-call :dk_color %Red% "Khoi phuc vung Windows                  [That bai] [%name% - %nation%]"
+call :dk_color %Red% "Restoring Windows Region                [Failed] [%name% - %nation%]"
 )
 )
 
-REM if %osSKU%==175 call :dk_color %Red% "%winos% khong ho tro kich hoat tren nen tang khong phai azure."
+REM if %osSKU%==175 call :dk_color %Red% "%winos% does not support activation on non-azure platforms."
 
 ::  Trigger reevaluation of SPP's Scheduled Tasks
 
@@ -1718,14 +1734,14 @@ set  "_Green="Black" "Green""
 set "_Yellow="Black" "Yellow""
 )
 
-set "nceline=echo: &echo ==== LOI ==== &echo:"
-set "eline=echo: &call :dk_color %Red% "==== LOI ====" &echo:"
+set "nceline=echo: &echo ==== ERROR ==== &echo:"
+set "eline=echo: &call :dk_color %Red% "==== ERROR ====" &echo:"
 if %~z0 GEQ 200000 (
-set "_exitmsg=Quay lai"
-set "_fixmsg=Quay lai Menu chinh, chon Xu ly su co va chay tuy chon Sua loi ban quyen."
+set "_exitmsg=Go back"
+set "_fixmsg=Go back to Main Menu, select Troubleshoot and run Fix Licensing option."
 ) else (
-set "_exitmsg=Thoat"
-set "_fixmsg=Trong thu muc MAS, chay Xu ly su co va chon tuy chon Sua loi ban quyen."
+set "_exitmsg=Exit"
+set "_fixmsg=In MAS folder, run Troubleshoot script and select Fix Licensing option."
 )
 exit /b
 
@@ -1744,7 +1760,7 @@ if defined UBR (set "fullbuild=%%G.!UBR!") else (set "fullbuild=%%G.%%H")
 )
 )
 
-echo Kiem tra thong tin OS                    [%winos% ^| %fullbuild% ^| %osarch%]
+echo Checking OS Info                        [%winos% ^| %fullbuild% ^| %osarch%]
 exit /b
 
 ::  Check SKU value
@@ -1771,7 +1787,7 @@ for /f "tokens=3 delims=." %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Con
 if %_wmic% EQU 1 for /f "tokens=2 delims==" %%a in ('"wmic Path Win32_OperatingSystem Get OperatingSystemSKU /format:LIST" %nul6%') do if not errorlevel 1 set "wmiSKU=%%a"
 if %_wmic% EQU 0 for /f "tokens=1" %%a in ('%psc% "([WMI]'Win32_OperatingSystem=@').OperatingSystemSKU" %nul6%') do if not errorlevel 1 set "wmiSKU=%%a"
 
-if %winbuild% GEQ 15063 %psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':winsubstatus\:.*';. ([scriptblock]::Create($f[1]))" %nul2% | find /i "Subscription_is_activated" %nul% && (
+if %winbuild% GEQ 15063 %psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':winsubstatus\:.*';. ([scriptblock]::Create($f[1]))" %nul2% | find /i "Subscription_is_activated" %nul% && (
 if defined regSKU if defined slcSKU if not "%regSKU%"=="%slcSKU%" (
 set winsub=1
 set osSKU=%regSKU%
@@ -1835,7 +1851,7 @@ echo %keyecho% %~1 [Successful]
 ) else (
 call :dk_color %Red% "%keyecho% %~1 [Failed] %keyerror%"
 if not defined showfix (
-if defined altapplist call :dk_color %Red% "Khong tim thay ID kich hoat cho khoa nay."
+if defined altapplist call :dk_color %Red% "Activation ID not found for this key."
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 set showfix=1
@@ -1877,7 +1893,7 @@ del "!_ttemp!\chklen" %nul%
 
 if !len! GTR 6000 (
 %eline%
-echo Qua nhieu ban quyen duoc cai dat, script co the bi loi.
+echo Too many licenses are installed, the script may crash.
 call :dk_color %Blue% "%_fixmsg%"
 timeout /t 30
 )
@@ -1975,10 +1991,10 @@ set spperror=%errorlevel%
 
 if %spperror% NEQ 1056 if %spperror% NEQ 0 (
 %eline%
-echo sc start %_slser% [Ma loi: %spperror%]
+echo sc start %_slser% [Error Code: %spperror%]
 if %spperror% EQU 1053 (
-call :dk_color %Blue% "Khoi dong lai may tinh va thu lai."
-call :dk_color %Blue% "Neu van khong hoat dong, quay lai Menu chinh, chon Xu ly su co va chay tuy chon Sua WPA Registry."
+call :dk_color %Blue% "Reboot your machine using the restart option and try again."
+call :dk_color %Blue% "If it still does not work, go back to Main Menu, select Troubleshoot and run Fix WPA Registry option."
 )
 )
 
@@ -2055,11 +2071,11 @@ if not exist %SysPath%\%_slexe% if not exist %SysPath%\alg.exe (set "results=%re
 )
 
 if not "%results%%pupfound%"=="" (
-if defined pupfound call :dk_color %Gray% "Kiem tra PUP Activators                 [Tim thay%pupfound%]"
+if defined pupfound call :dk_color %Gray% "Checking PUP Activators                 [Found%pupfound%]"
 if defined results call :dk_color %Red% "Checking Probable Mal%w%ware Infection..."
 if defined results (call :dk_color %Red% "%results%"&set showfix=1)
 set fixes=%fixes% %mas%remove_mal%w%ware
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%remove_mal%w%ware"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%remove_mal%w%ware"
 echo:
 )
 
@@ -2083,9 +2099,9 @@ call :dk_chkmal
 ::  Check Sandboxing
 
 sc query Null %nul% || (
-call :dk_color %Red% "Kiem tra Sandbox                        [Tim thay, script co the khong hoat dong dung]"
+call :dk_color %Red% "Checking Sandboxing                     [Found, script may not work properly]"
 if not defined showfix (
-call :dk_color %Blue% "Neu ban dung phan mem diet virus ben thu ba, kiem tra xem no co chan script khong."
+call :dk_color %Blue% "If you are using any third-party antivirus, check if it is blocking the script."
 echo:
 )
 set error=1
@@ -2098,9 +2114,9 @@ set showfix=1
 
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinPE" /v InstRoot %nul% && (
 
-call :dk_color %Red% "Kiem tra WinPE                          [Tim thay]"
+call :dk_color %Red% "Checking WinPE                          [Found]"
 if not defined showfix (
-call :dk_color %Blue% "Phat hien che do WinPE. Khoi dong lai he thong va chay o che do binh thuong."
+call :dk_color %Blue% "WinPE mode found. Reboot the system and run in normal mode."
 echo:
 )
 set error=1
@@ -2112,9 +2128,9 @@ set showfix=1
 ::  Check Safe mode
 
 if defined safeboot_option (
-call :dk_color %Red% "Kiem tra che do khoi dong               [%safeboot_option%]"
+call :dk_color %Red% "Checking Boot Mode                      [%safeboot_option%]"
 if not defined showfix (
-call :dk_color %Blue% "Phat hien che do Safe Mode. Khoi dong lai he thong va chay o che do binh thuong."
+call :dk_color %Blue% "Safe mode found. Reboot the system and run in normal mode."
 echo:
 )
 set error=1
@@ -2129,10 +2145,10 @@ set showfix=1
 for /f "skip=2 tokens=2*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State" /v ImageState') do (set imagestate=%%B)
 
 if /i not "%imagestate%"=="IMAGE_STATE_COMPLETE" (
-call :dk_color %Gray% "Kiem tra trang thai cai dat Windows     [%imagestate%]"
+call :dk_color %Gray% "Checking Windows Setup State            [%imagestate%]"
 echo "%imagestate%" | find /i "RESEAL" %nul% && (
 if not defined showfix (
-call :dk_color %Blue% "Ban can chay o che do binh thuong neu dang chay trong che do Audit."
+call :dk_color %Blue% "You need to run it in normal mode in case you are running it in Audit Mode."
 echo:
 )
 set error=1
@@ -2141,7 +2157,7 @@ set showfix=1
 echo "%imagestate%" | find /i "UNDEPLOYABLE" %nul% && (
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu kich hoat that bai, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If the activation fails, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 )
@@ -2166,16 +2182,16 @@ if defined _corrupt (if defined serv_cor (set "serv_cor=!serv_cor! %%#!_regcorr!
 )
 
 if defined serv_cor (
-call :dk_color %Red% "Kiem tra dich vu bi loi                 [%serv_cor%]"
+call :dk_color %Red% "Checking Corrupt Services               [%serv_cor%]"
 
 if not defined showfix (
 echo:
 if /i "%serv_cor%"=="sppsvc-RegistryError" (
 set fixes=%fixes% %mas%fix_service
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%fix_service"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%fix_service"
 ) else (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 echo:
 )
@@ -2216,19 +2232,19 @@ if defined serv_cste (set "serv_cste=!serv_cste! %%#") else (set "serv_cste=%%#"
 )
 )
 
-if defined serv_csts call :dk_color %Gray% "Kich hoat dich vu bi vo hieu hoa        [Thanh cong] [%serv_csts%]"
+if defined serv_csts call :dk_color %Gray% "Enabling Disabled Services              [Successful] [%serv_csts%]"
 
 if defined serv_cste (
-call :dk_color %Red% "Kich hoat dich vu bi vo hieu hoa        [That bai] [%serv_cste%]"
+call :dk_color %Red% "Enabling Disabled Services              [Failed] [%serv_cste%]"
 
 if not defined showfix (
 echo:
 echo %serv_cste% | findstr /i "ClipSVC sppsvc" %nul% && (
-echo Da ap dung sua chua registry de kich hoat dich vu bi vo hieu hoa.
-call :dk_color %Blue% "Khoi dong lai may tinh de sua loi nay."
+echo A registry fix has been applied to enable the disabled service.
+call :dk_color %Blue% "Reboot your machine using the restart option to fix this error."
 ) || (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 echo:
 )
@@ -2259,15 +2275,15 @@ if defined checkerror if defined serv_e (set "serv_e=!serv_e!, %%#-!errorcode!")
 )
 
 if defined serv_e (
-call :dk_color %Red% "Khoi dong dich vu                       [That bai] [%serv_e%]"
+call :dk_color %Red% "Starting Services                       [Failed] [%serv_e%]"
 
 if not defined showfix (
 set listwospp=%_serv:sppsvc=%
 echo %serv_e% | findstr /i "!listwospp!" %nul% && (
 set showfix=1
-call :dk_color %Blue% "Khoi dong lai may tinh va chay lai script."
+call :dk_color %Blue% "Reboot your machine using the restart option and run the script again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu loi dich vu van chua duoc sua, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If service error is still not fixed, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 )
@@ -2293,10 +2309,10 @@ if %error_code% NEQ 0 set "error_code=0x%=ExitCode%"
 echo "%error_code%" | findstr /i "0x800410 0x800440 0x80131501" %nul1% && set wmifailed=1& ::  https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmi-error-constants
 
 if defined wmifailed (
-call :dk_color %Red% "Kiem tra WMI                            [Khong hoat dong]"
+call :dk_color %Red% "Checking WMI                            [Not Working]"
 
 if not defined showfix (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay tuy chon Sua WMI."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run Fix WMI option."
 echo:
 )
 set error=1
@@ -2308,10 +2324,10 @@ set showfix=1
 ::  Check SPP Registry Key
 
 if %winbuild% GEQ 7600 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Plugins\Objects\msft:rm/algorithm/hwid/4.0" /f ba02fed39662 /d %nul% || (
-call :dk_color %Red% "Kiem tra SPP Registry Key               [Tim thay ModuleId sai] [Co the do phan mem gia lap game]"
+call :dk_color %Red% "Checking SPP Registry Key               [Incorrect ModuleId Found] [Most likely caused by gaming spoofers]"
 if not defined showfix (
 set fixes=%fixes% %mas%issues_due_to_gaming_spoofers
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%issues_due_to_gaming_spoofers"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%issues_due_to_gaming_spoofers"
 echo:
 )
 set error=1
@@ -2328,10 +2344,10 @@ for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT
 if %winbuild% LSS 9200 set "tokenstore=%Systemdrive%\Windows\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\SoftwareProtectionPlatform"
 
 if %winbuild% GEQ 9200 if /i not "!tokenstore!"=="%SysPath%\spp\store" if /i not "!tokenstore!"=="%SysPath%\spp\store\2.0" if /i not "!tokenstore!"=="%SysPath%\spp\store_test\2.0" (
-call :dk_color %Red% "Kiem tra TokenStore Registry Key        [Khong tim thay duong dan dung] [!tokenstore!]"
+call :dk_color %Red% "Checking TokenStore Registry Key        [Correct Path Not Found] [!tokenstore!]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 set toerr=1
@@ -2356,12 +2372,12 @@ set "d=!d! Set-Acl -Path %tokenstore% -AclObject $AclObject;"
 %psc% "!d!" %nul%
 
 if exist "%tokenstore%\" (
-call :dk_color %Gray% "Kiem tra thu muc SPP Token              [Khong tim thay, da tao moi] [%tokenstore%\]"
+call :dk_color %Gray% "Checking SPP Token Folder               [Not Found, Created Now] [%tokenstore%\]"
 ) else (
-call :dk_color %Red% "Kiem tra thu muc SPP Token              [Khong tim thay, tao that bai] [%tokenstore%\]"
+call :dk_color %Red% "Checking SPP Token Folder               [Not Found, Failed to Create] [%tokenstore%\]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 set error=1
@@ -2402,7 +2418,7 @@ if !errorlevel!==3 set "permerror=Error Found In S-1-5-20 SPP"
 )
 
 if defined permerror (
-call :dk_color %Red% "Kiem tra quyen SPP                      [!permerror!]"
+call :dk_color %Red% "Checking SPP Permissions                [!permerror!]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
@@ -2418,14 +2434,14 @@ set showfix=1
 
 set chkalp=
 set wpainfo=NotFound
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':wpatest\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set wpainfo=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wpatest\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set wpainfo=%%a)
 for /f "delims=0123456789" %%i in ("%wpainfo%") do set chkalp=%%i
 
 if defined chkalp (
-call :dk_color %Red% "Kiem tra loi WPA Registry               [%wpainfo%]"
+call :dk_color %Red% "Checking WPA Registry Errors            [%wpainfo%]"
 if not defined showfix (
 echo "%wpainfo%" | find /i "Error Found" %nul% && (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay tuy chon Sua WPA Registry."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run Fix WPA Registry option."
 echo:
 set error=1
 set showfix=1
@@ -2436,12 +2452,12 @@ set wpainfo=a
 
 if not defined chkalp (
 if %wpainfo% GEQ 5000 (
-call :dk_color %Gray% "Kiem tra so luong WPA Registry           [%wpainfo%]"
-call :dk_color %Blue% "Tim thay so luong lon WPA registry, co the gay su dung CPU cao."
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay tuy chon Sua WPA Registry."
+call :dk_color %Gray% "Checking WPA Registry Count             [%wpainfo%]"
+call :dk_color %Blue% "A large number of WPA registries have been found, which may cause high CPU usage."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run Fix WPA Registry option."
 echo:
 ) else (
-echo Kiem tra so luong WPA Registry           [%wpainfo%]
+echo Checking WPA Registry Count             [%wpainfo%]
 )
 )
 
@@ -2450,9 +2466,9 @@ echo Kiem tra so luong WPA Registry           [%wpainfo%]
 ::  Check Rearm
 
 reg query "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\PersistedTSReArmed" %nul% && (
-call :dk_color %Red% "Kiem tra Rearm                          [He thong da Rearm]"
+call :dk_color %Red% "Checking Rearm                          [System is Rearmed]"
 if not defined showfix (
-call :dk_color %Blue% "Khoi dong lai may tinh de sua loi nay."
+call :dk_color %Blue% "Reboot your machine using the restart option to fix this error."
 echo:
 )
 set error=1
@@ -2461,9 +2477,9 @@ set showfix=1
 
 
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ClipSVC\Volatile\PersistedSystemState" %nul% && (
-call :dk_color %Red% "Kiem tra ClipSVC PersistedSystemState   [Tim thay]"
+call :dk_color %Red% "Checking ClipSVC PersistedSystemState   [Found]"
 if not defined showfix (
-call :dk_color %Blue% "Khoi dong lai may tinh de sua loi nay."
+call :dk_color %Blue% "Reboot your machine using the restart option to fix this error."
 echo:
 )
 set error=1
@@ -2475,10 +2491,10 @@ set showfix=1
 ::  Check SoftwareLicensingService
 
 if %error_code% NEQ 0 (
-call :dk_color %Red% "Kiem tra SoftwareLicensingService       [Khong hoat dong] [%error_code%]"
+call :dk_color %Red% "Checking SoftwareLicensingService       [Not Working] [%error_code%]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Neu kich hoat van that bai, chay tuy chon Sua WPA Registry."
+call :dk_color %Blue% "If activation still fails then run Fix WPA Registry option."
 echo:
 )
 set error=1
@@ -2492,7 +2508,7 @@ set showfix=1
 call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 
 if not defined apps (
-%psc% "if (-not $env:_vis) {Start-Job { Stop-Service %_slser% -force } | Wait-Job -Timeout 20 | Out-Null}; $sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+%psc% "if (-not $env:_vis) {Start-Job { Stop-Service %_slser% -force } | Wait-Job -Timeout 20 | Out-Null}; $sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 if not defined _vis if !errorlevel! NEQ 0 set rlicfailed=1
 call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 )
@@ -2500,14 +2516,14 @@ call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 if not defined apps call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 
 if not defined apps if defined allapps if not defined notwinact (
-call :dk_color %Gray% "Kiem tra ID kich hoat                   [Khoa chua cai hoac khong tim thay ID]"
+call :dk_color %Gray% "Checking Activation IDs                 [Key Not Installed or Act ID Not Found]"
 )
 
 if not defined apps if not defined allapps (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay]"
+call :dk_color %Red% "Checking Activation IDs                 [Not found]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Neu kich hoat van that bai, chay tuy chon Sua WPA Registry."
+call :dk_color %Blue% "If activation still fails then run Fix WPA Registry option."
 echo:
 )
 set error=1
@@ -2516,12 +2532,12 @@ set showfix=1
 
 if not defined showfix if defined rlicfailed (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Neu kich hoat van that bai, chay tuy chon Sua WPA Registry."
+call :dk_color %Blue% "If activation still fails then run Fix WPA Registry option."
 echo:
 )
 
 if %winbuild% GEQ 7600 if exist "%tokenstore%\" if not exist "%tokenstore%\tokens.dat" (
-call :dk_color %Red% "Kiem tra SPP tokens.dat                 [Khong tim thay] [%tokenstore%\]"
+call :dk_color %Red% "Checking SPP tokens.dat                 [Not Found] [%tokenstore%\]"
 )
 
 ::==============================
@@ -2530,11 +2546,11 @@ call :dk_color %Red% "Kiem tra SPP tokens.dat                 [Khong tim thay] [
 
 if not defined notwinact if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*EvalEdition~*.mum" (
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID %nul2% | find /i "Eval" %nul1% || (
-call :dk_color %Red% "Kiem tra goi Eval                       [Phat hien trao doi ban quyen. Ban quyen Non-Eval da cai trong Windows ban danh gia]"
+call :dk_color %Red% "Checking Eval Packages                  [License swapping found. Non-Eval licenses are installed in Eval Windows]"
 if not defined showfix (
-call :dk_color %Blue% "Trao doi ban quyen khong phai cach dung de nang cap len phien ban day du. Xem cach dung tai link ben duoi."
+call :dk_color %Blue% "License swapping is not the right way to upgrade to the full version. Learn the correct method at the link below."
 set fixes=%fixes% %mas%evaluation_editions
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%evaluation_editions"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%evaluation_editions"
 echo:
 )
 set error=1
@@ -2547,10 +2563,10 @@ set showfix=1
 ::  Check HKU\S-1-5-20\Software registry, in some systems it's missing and that causes Windows activation problems
 
 reg query "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion" %nul% || (
-call :dk_color %Red% "Kiem tra HKU\S-1-5-20 Registry          [Khong tim thay]"
+call :dk_color %Red% "Checking HKU\S-1-5-20 Registry          [Not Found]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 set error=1
@@ -2577,18 +2593,18 @@ if "%osSKU%"=="165" set osedition=ProfessionalEducationN
 
 if not defined notwinact (
 if %osedition%==0 (
-call :dk_color %Red% "Kiem tra ten phien ban                  [Khong tim thay trong Registry]"
+call :dk_color %Red% "Checking Edition Name                   [Not Found In Registry]"
 ) else (
 if not exist "%SysPath%\spp\tokens\skus\%osedition%\%osedition%*.xrm-ms" if not exist "%SysPath%\spp\tokens\skus\Security-SPP-Component-SKU-%osedition%\*-%osedition%-*.xrm-ms" if not exist "%SysPath%\licensing\skus\Security-Licensing-SLC-Component-SKU-%osedition%\*-%osedition%-*.xrm-ms" (
 set skunotfound=1
-call :dk_color %Red% "Kiem tra file ban quyen                 [Khong tim thay] [%osedition%]"
+call :dk_color %Red% "Checking License Files                  [Not Found] [%osedition%]"
 )
 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*-%osedition%-*.mum" (
 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-%osedition%Edition*.mum" (
-call :dk_color %Red% "Kiem tra file goi cai                   [Khong tim thay] [%osedition%]"
+call :dk_color %Red% "Checking Package Files                  [Not Found] [%osedition%]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 set error=1
@@ -2607,13 +2623,13 @@ if %winbuild% GEQ 10240 (
 %nul% set /a "sum=%slcSKU%+%regSKU%+%wmiSKU%"
 set /a "sum/=3"
 if not "!sum!"=="%slcSKU%" (
-call :dk_color %Gray% "Kiem tra SLC/WMI/REG SKU                [Tim thay khac biet - SLC:%slcSKU% WMI:%wmiSKU% Reg:%regSKU%]"
+call :dk_color %Gray% "Checking SLC/WMI/REG SKU                [Difference Found - SLC:%slcSKU% WMI:%wmiSKU% Reg:%regSKU%]"
 )
 ) else (
 %nul% set /a "sum=%slcSKU%+%wmiSKU%"
 set /a "sum/=2"
 if not "!sum!"=="%slcSKU%" (
-call :dk_color %Gray% "Kiem tra SLC/WMI SKU                    [Tim thay khac biet - SLC:%slcSKU% WMI:%wmiSKU%]"
+call :dk_color %Gray% "Checking SLC/WMI SKU                    [Difference Found - SLC:%slcSKU% WMI:%wmiSKU%]"
 )
 )
 )
@@ -2625,7 +2641,7 @@ call :dk_color %Gray% "Kiem tra SLC/WMI SKU                    [Tim thay khac bi
 sc query wlms %nul%
 
 if %errorlevel% NEQ 1060 (
-echo Kiem tra dich vu Eval WLMS              [Tim thay]
+echo Checking Eval WLMS Service              [Found]
 )
 
 ::==============================
@@ -2637,14 +2653,14 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu
 )
 if defined _sppint (
 echo %_sppint% | find /i "PerfOptions" %nul% && (
-call :dk_color %Red% "Kiem tra SPP can thiep trong IFEO       [%_sppint% - He thong co the bi huy kich hoat sau]"
+call :dk_color %Red% "Checking SPP Interference In IFEO       [%_sppint% - System might deactivate later]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 )
 set showfix=1
 ) || (
-echo Kiem tra SPP trong IFEO                 [%_sppint%]
+echo Checking SPP In IFEO                    [%_sppint%]
 )
 )
 
@@ -2654,7 +2670,7 @@ echo Kiem tra SPP trong IFEO                 [%_sppint%]
 
 if %winbuild% GEQ 7600 for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" %nul6%') do if /i %%b NEQ 0x0 (
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /t REG_DWORD /d "0" /f %nul%
-call :dk_color %Gray% "Kiem tra SkipRearm                      [Khong tim thay gia tri mac dinh 0. Dang doi sang 0]"
+call :dk_color %Gray% "Checking SkipRearm                      [Default 0 Value Not Found. Changing To 0]"
 %psc% "Start-Job { Stop-Service sppsvc -force } | Wait-Job -Timeout 20 | Out-Null"
 )
 
@@ -2671,13 +2687,13 @@ reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Soft
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\Microsoft\Windows\SoftwareProtectionPlatform\SvcRestartTask" %nul% || set taskinfo=Removed
 if "!taskinfo!"=="" set "taskinfo=Not Found"
 
-call :dk_color %Gray% "Kiem tra trang thai SvcRestartTask      [!taskinfo!. He thong co the bi huy kich hoat sau.]"
+call :dk_color %Gray% "Checking SvcRestartTask Status          [!taskinfo!. System might deactivate later.]"
 if not defined showfix (
 echo "!taskinfo!" | findstr /i "Removed Not Found" %nul1% && (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 ) || (
-call :dk_color %Blue% "Khoi dong lai may tinh va chay lai script."
+call :dk_color %Blue% "Reboot your machine using the restart option and run the script again."
 )
 echo:
 )
@@ -2773,18 +2789,18 @@ echo:
 if %_unattended%==1 timeout /t 2 & exit /b
 
 if defined fixes (
-call :dk_color %White% "Lam theo TAT CA cac dong mau xanh phia tren.   "
-call :dk_color2 %Blue% "Nhan [1] de mo trang Ho tro " %Gray% " Nhan [0] de bo qua"
+call :dk_color %White% "Follow ALL the ABOVE blue lines.   "
+call :dk_color2 %Blue% "Press [1] to Open Support Webpage " %Gray% " Press [0] to Ignore"
 choice /C:10 /N
 if !errorlevel!==2 exit /b
 if !errorlevel!==1 (start %selfgit% & start %github% & for %%# in (%fixes%) do (start %%#))
 )
 
 if defined terminal (
-call :dk_color %_Yellow% "Nhan phim [0] de %_exitmsg%..."
+call :dk_color %_Yellow% "Press [0] key to %_exitmsg%..."
 choice /c 0 /n
 ) else (
-call :dk_color %_Yellow% "Nhan phim bat ky de %_exitmsg%..."
+call :dk_color %_Yellow% "Press any key to %_exitmsg%..."
 pause %nul1%
 )
 
@@ -2857,7 +2873,7 @@ REM Generate ticket
 
 if %1==ticket if "%key%"=="%%B" (
 set "SessionIdStr=OSMajorVersion=5;OSMinorVersion=1;OSPlatformId=2;PP=0;Pfn=Microsoft.Windows.%%C.%%D_8wekyb3d8bbwe;PKeyIID=465145217131314304264339481117862266242033457260311819664735280;"
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':sign\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':sign\:.*';. ([scriptblock]::Create($f[1]))"
 )
 
 )
@@ -2932,7 +2948,7 @@ $SignatureStr = SignProperties $PropertiesStr $rsa
 $xml = @"
 <?xml version="1.0" encoding="utf-8"?><genuineAuthorization xmlns="http://www.microsoft.com/DRM/SL/GenuineAuthorization/1.0"><version>1.0</version><genuineProperties origin="sppclient"><properties>$PropertiesStr</properties><signatures><signature name="clientLockboxKey" method="rsa-sha256">$SignatureStr</signature></signatures></genuineProperties></genuineAuthorization>
 "@
-[System.IO.File]::WriteAllText("$env:ProgramData\Microsoft\Windows\ClipSVC\GenuineTicket\GenuineTicket", ($xml -join ""), [System.Text.Encoding]::ASCII)
+[IO.File]::WriteAllText("$env:ProgramData\Microsoft\Windows\ClipSVC\GenuineTicket\GenuineTicket", ($xml -join ""), [System.Text.Encoding]::ASCII)
 :sign:
 
 ::========================================================================================================================================
@@ -2990,7 +3006,7 @@ set _rem=0
 
 cls
 color 07
-title  Kich hoat Ohook %masver%
+title  Ohook Activation %masver%
 
 set _args=
 set _elev=
@@ -3017,7 +3033,7 @@ if %_rem%==1 goto :oh_uninstall
 if %_unattended%==0 (
 cls
 if not defined terminal mode 76, 25
-title  Kich hoat Ohook %masver%
+title  Ohook Activation %masver%
 call :oh_checkapps
 echo:
 echo:
@@ -3026,17 +3042,17 @@ echo:
 if defined checknames (call :dk_color %_Yellow% "                Close [!checknames!] before proceeding...")
 echo         ____________________________________________________________
 echo:
-echo                 [1] Cai dat kich hoat Ohook Office
+echo                 [1] Install Ohook Office Activation
 echo:
-echo                 [2] Go cai dat Ohook
+echo                 [2] Uninstall Ohook
 echo                 ____________________________________________
 echo:
-echo                 [3] Tai Office
+echo                 [3] Download Office
 echo:
 echo                 [0] %_exitmsg%
 echo         ____________________________________________________________
 echo: 
-call :dk_color2 %_White% "             " %_Green% "Chon tuy chon bang ban phim [1,2,3,0]"
+call :dk_color2 %_White% "             " %_Green% "Choose a menu option using your keyboard [1,2,3,0]"
 choice /C:1230 /N
 set _el=!errorlevel!
 if !_el!==4  exit /b
@@ -3055,21 +3071,21 @@ if not defined terminal (
 mode 140, 32
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=32;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  Kich hoat Ohook %masver%
+title  Ohook Activation %masver%
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] tep bi thieu, dang huy...
+echo [%SysPath%\%_slexe%] file is missing, aborting...
 echo:
 if not defined results (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay DISM Restore va SFC Scan."
-call :dk_color %Blue% "Sau do, khoi dong lai he thong va thu kich hoat lai."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run DISM Restore and SFC Scan options."
+call :dk_color %Blue% "After that, restart system and try activation again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu van gap loi nay, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If it still shows the same error, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -3094,7 +3110,7 @@ call :dk_showosinfo
 
 ::========================================================================================================================================
 
-echo Dang bat dau kiem tra chan doan...
+echo Initiating Diagnostic Tests...
 
 set "_serv=%_slser% Winmgmt"
 
@@ -3125,8 +3141,8 @@ for /f "delims=" %%a in ('%psc% "(Get-AppxPackage -name 'Microsoft.Office.Deskto
 
 if not "%o14c2r%%o16uwp%"=="" (
 echo:
-call :dk_color %Red% "Kiem tra cai dat Office khong ho tro    [ %o14c2r%%o16uwp%]"
-if not "%o16uwp%"=="" call :dk_color %Blue% "Su dung tuy chon TSforge de kich hoat."
+call :dk_color %Red% "Checking Unsupported Office Install     [ %o14c2r%%o16uwp%]"
+if not "%o16uwp%"=="" call :dk_color %Blue% "Use TSforge option to activate it."
 )
 
 if %winbuild% GEQ 10240 %psc% "Get-AppxPackage -name "Microsoft.MicrosoftOfficeHub"" | find /i "Office" %nul1% && (
@@ -3143,7 +3159,7 @@ sc query ClickToRunSvc %nul%
 set error1=%errorlevel%
 
 if defined o16c2r if %error1% EQU 1060 (
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 16.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 16.0 files found]"
 set o16c2r=
 set error=1
 )
@@ -3152,7 +3168,7 @@ sc query OfficeSvc %nul%
 set error2=%errorlevel%
 
 if defined o15c2r if %error1% EQU 1060 if %error2% EQU 1060 (
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 15.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 15.0 files found]"
 set o15c2r=
 set error=1
 )
@@ -3161,16 +3177,16 @@ if "%o16c2r%%o15c2r%%o16msi%%o15msi%%o14msi%"=="" (
 set error=1
 echo:
 if not "%o14c2r%%o16uwp%"=="" (
-call :dk_color %Red% "Kiem tra cai dat Office ho tro          [Khong tim thay]"
+call :dk_color %Red% "Checking Supported Office Install       [Not Found]"
 ) else (
-call :dk_color %Red% "Kiem tra Office da cai dat              [Khong tim thay]"
+call :dk_color %Red% "Checking Installed Office               [Not Found]"
 )
 
 if defined ohub (
 echo:
-echo Ban chi cai dat ung dung Office Dashboard; can cai dat phien ban day du cua Office.
+echo You only have the Office Dashboard app installed; you need to install the full version of Office.
 )
-call :dk_color %Blue% "Tai va cai dat Office tu link ben duoi, sau do thu lai."
+call :dk_color %Blue% "Download and install Office from the URL below, then try again."
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto dk_done
@@ -3181,7 +3197,7 @@ if not "%o16c2r%%o15c2r%%o16msi%%o15msi%%o14msi%"=="1" set multioffice=1
 if not "%o14c2r%%o16uwp%"=="" set multioffice=1
 
 if defined multioffice (
-call :dk_color %Gray% "Kiem tra cai dat nhieu Office           [Tim thay, nen chi cai mot phien ban]"
+call :dk_color %Gray% "Checking Multiple Office Install        [Found, its recommended to install only one version]"
 )
 
 ::========================================================================================================================================
@@ -3204,13 +3220,13 @@ for /f "tokens=3" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\CI\P
 )
 if defined sacstate (
 if "%sacstate%"=="0x1" (
-call :dk_color %Gray% "Kiem tra Smart App Control              [Da bat]"
-call :dk_color %Blue% "Smart App Control co the ngan ban mo Office sau khi kich hoat Ohook."
-call :dk_color %Blue% "Ban can tat no tu cai dat Windows Defender neu gap van de."
+call :dk_color %Gray% "Checking Smart App Control State        [Enabled]"
+call :dk_color %Blue% "Smart App Control may prevent you from opening Office after Ohook activation."
+call :dk_color %Blue% "You will need to disable it from the Windows Defender settings if it does."
 ) else if "%sacstate%"=="0x2" (
-call :dk_color %Gray% "Kiem tra Smart App Control              [Dang danh gia]"
-call :dk_color %Blue% "Smart App Control co the ngan ban mo Office trong tuong lai neu no tu bat sau thoi gian danh gia."
-call :dk_color %Blue% "Khuyen nghi tat no tu cai dat Windows Defender."
+call :dk_color %Gray% "Checking Smart App Control State        [Evaluation]"
+call :dk_color %Blue% "Smart App Control may prevent you from opening Office in the future if it enables itself after the evaluation period."
+call :dk_color %Blue% "It is recommended that you disable it from the Windows Defender settings."
 )
 )
 
@@ -3246,16 +3262,16 @@ if /i "%_oArch%"=="x86" (set "_hookPath=%_oRoot%\vfs\SystemX86" & set "_hook=spp
 call :oh_ppcpath
 
 echo:
-echo Dang kich hoat Office...                [C2R ^| %_version% ^| %_oArch%]
+echo Activating Office...                    [C2R ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :starto16c2r
 )
 
 if defined noOsppc (
-call :dk_color %Red% "Kiem tra OSPPC.DLL                      [Khong tim thay. Dang huy...]"
+call :dk_color %Red% "Checking OSPPC.DLL                      [Not found. Aborting activation...]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 goto :starto16c2r
@@ -3304,16 +3320,16 @@ if /i "%_oArch%"=="x86" (set "_hookPath=%_oRoot%\vfs\SystemX86" & set "_hook=spp
 call :oh_ppcpath
 
 echo:
-echo Dang kich hoat Office...                [C2R ^| %_version% %_AudienceData%^| %_oArch%]
+echo Activating Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :startmsi
 )
 
 if defined noOsppc (
-call :dk_color %Red% "Kiem tra OSPPC.DLL                      [Khong tim thay. Dang huy...]"
+call :dk_color %Red% "Checking OSPPC.DLL                      [Not found. Aborting activation...]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 goto :startmsi
@@ -3336,7 +3352,7 @@ call :oh_hookinstall
 
 if defined _sublic (
 if not exist "%_oLPath%\Word2021VL_KMS_Client_AE*.xrm-ms" (
-call :dk_color %Gray% "Kiem tra Office cu voi Sub License      [Tim thay. Cap nhat Office, neu khong co the hien thong bao loi ban quyen.]"
+call :dk_color %Gray% "Checking Old Office With Sub License    [Found. Update Office, otherwise, it may show a licensing issue-related banner.]"
 )
 )
 
@@ -3355,7 +3371,7 @@ reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" /reg:
 )
 reg delete "%kmskey%" /f %nul%
 reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" %nul%
-echo Them Registry de ngan thong bao          [Thanh cong]
+echo Adding a Registry to Prevent Banner     [Successful]
 )
 )
 
@@ -3379,14 +3395,14 @@ call :oh_licrefresh
 
 echo:
 if not defined error (
-call :dk_color %Green% "Office da duoc kich hoat vinh vien."
-if defined ohub call :dk_color %Gray% "Cac ung dung Office nhu Word, Excel da kich hoat, su dung truc tiep. Bo qua nut 'Mua' trong ung dung Office dashboard."
-echo Ho tro: %mas%troubleshoot
+call :dk_color %Green% "Office is permanently activated."
+if defined ohub call :dk_color %Gray% "Office apps such as Word, Excel are activated, use them directly. Ignore 'Buy' button in Office dashboard app."
+echo Help: %mas%troubleshoot
 ) else (
-call :dk_color %Red% "Phat hien mot so loi."
+call :dk_color %Red% "Some errors were detected."
 if not defined ierror if not defined showfix call :dk_color %Blue% "%_fixmsg%"
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 goto :dk_done
@@ -3397,7 +3413,7 @@ goto :dk_done
 
 cls
 if not defined terminal mode 145, 32
-title  Go cai dat Ohook %masver%
+title  Uninstall Ohook Activation %masver%
 
 set _present=
 set _unerror=
@@ -3405,7 +3421,7 @@ call :oh_reset
 call :oh_getpath
 
 echo:
-echo Dang go cai dat Ohook...
+echo Uninstalling Ohook activation...
 echo:
 
 if defined o16c2r_reg (for /f "skip=2 tokens=2*" %%a in ('"reg query %o16c2r_reg% /v InstallPath" %nul6%') do (set "_16CHook=%%b\root\vfs"))
@@ -3447,13 +3463,13 @@ if !size! GEQ 1 if !size! LSS 100000 (
 set _present=1
 del /f /q "%%~G"
 if exist "%%~G" (move /y "%%~G" "!_ttemp!\needsToBeDeleted%random%" %nul%)
-if exist "%%~G" (set _unerror=1) else (echo Da xoa file - %%~G)
+if exist "%%~G" (set _unerror=1) else (echo Deleted file - %%~G)
 )
 if /i sppcs.dll==%%# if !size! GEQ 100000 (
 move /y "%%~G" "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" %nul%
 if exist "%%~G" (move /y "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" "!_ttemp!\needsToBeDeleted%random%" %nul%)
 move /y "%%~G" "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" %nul%
-if exist "%%~G" (set _unerror=1&echo Khong the doi ten sppcs.dll lai thanh "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL") else (echo Da doi ten sppcs.dll lai thanh "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL")
+if exist "%%~G" (set _unerror=1&echo Failed to rename sppcs.dll back to "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL") else (echo Renamed sppcs.dll back to "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL")
 )
 )
 )
@@ -3463,7 +3479,7 @@ if exist "%%~G" (set _unerror=1&echo Khong the doi ten sppcs.dll lai thanh "%%~A
 
 reg query HKCU\Software\Microsoft\Office\16.0\Common\Licensing\Resiliency %nul% && (
 echo:
-echo Dang xoa - Registry keys bo qua kiem tra ban quyen
+echo Deleting - Registry keys for skipping license check
 
 reg load HKU\DEF_TEMP %SystemDrive%\Users\Default\NTUSER.DAT %nul%
 reg query HKU\DEF_TEMP\Software\Microsoft\Office\16.0\Common\Licensing\Resiliency %nul% && reg delete HKU\DEF_TEMP\Software\Microsoft\Office\16.0\Common\Licensing\Resiliency /f
@@ -3495,7 +3511,7 @@ reg unload HKU\%%# %nul%
 set "kmskey=HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663"
 reg query "%kmskey%" %nul% && (
 echo:
-echo Dang xoa - Registry keys ngan thong bao khong chinh hang
+echo Deleting - Registry keys for preventing non-genuine banner
 reg delete "%kmskey%" /f
 )
 
@@ -3507,19 +3523,19 @@ echo ___________________________________________________________________________
 echo:
 
 if not defined _present (
-echo Ohook chua duoc cai dat.
+echo Ohook activation is not installed.
 ) else (
 if defined _unerror (
-call :dk_color %Red% "Go cai dat Ohook that bai."
+call :dk_color %Red% "Failed to uninstall Ohook activation."
 call :oh_checkapps
 if defined checknames (
-call :dk_color %Blue% "Dong [!checknames!] va thu lai."
-call :dk_color %Blue% "Neu van chua sua duoc, khoi dong lai may tinh va thu lai."
+call :dk_color %Blue% "Close [!checknames!] and try again."
+call :dk_color %Blue% "If it is still not fixed, reboot your machine using the restart option and try again."
 ) else (
-call :dk_color %Blue% "Khoi dong lai may tinh va thu lai."
+call :dk_color %Blue% "Reboot your machine using the restart option and try again."
 )
 ) else (
-call :dk_color %Green% "Go cai dat Ohook thanh cong."
+call :dk_color %Green% "Successfully uninstalled Ohook activation."
 )
 )
 echo __________________________________________________________________________________________
@@ -3591,8 +3607,8 @@ if %%#==2024 set _offver=2024
 if exist "!_oLPath!\ProPlus!_offver!PreviewVL_*.xrm-ms" if not exist "!_oLPath!\ProPlus!_offver!VL_*.xrm-ms" (
 set error=1
 set showfix=1
-call :dk_color %Red% "Kiem tra san pham Preview het han       [Tim thay Office %%# Preview]"
-call :dk_color %Blue% "Vui long cap nhat Office truoc, sau do thu kich hoat lai."
+call :dk_color %Red% "Checking Expired Preview Products       [Office %%# Preview Found]"
+call :dk_color %Blue% "Please run the Office updates first, and then attempt to activate it again."
 )
 )
 
@@ -3649,7 +3665,7 @@ exit /b
 :oh_fixprids
 
 if not defined _prids (
-call :dk_color %Gray% "Kiem tra ProductReleaseIds trong Registry [Khong tim thay]"
+call :dk_color %Gray% "Checking ProductReleaseIds In Registry  [Not Found]"
 exit /b
 )
 
@@ -3714,12 +3730,12 @@ for %%# in ("!_oLPath!\%_License%*.xrm-ms") do (
 if defined _arr (set "_arr=!_arr!;"!_oLPath!\%%~nx#"") else (set "_arr="!_oLPath!\%%~nx#"")
 )
 
-%psc% "$sls = Get-WmiObject %sps%; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'; InstallLicenseFile '"!_oLPath!\pkeyconfig-office.xrm-ms"'" %nul%
+%psc% "$sls = Get-WmiObject %sps%; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'; InstallLicenseFile '"!_oLPath!\pkeyconfig-office.xrm-ms"'" %nul%
 
 call :dk_actids 0ff1ce15-a989-479d-af46-f275c6370663
 echo "!allapps!" | find /i "!_actid!" %nul1% || (
 set error=1
-call :dk_color %Red% "Cai dat file ban quyen thieu           [Office %oVer%.0 %_prod%] [That bai]"
+call :dk_color %Red% "Installing Missing License Files        [Office %oVer%.0 %_prod%] [Failed]"
 )
 
 exit /b
@@ -3772,11 +3788,11 @@ goto :oh_hookinstall_error
 )
 
 echo:
-echo Lien ket sppc.dll he thong               ["%_hookPath%\sppcs.dll"] [Successful]
+echo Symlinking System's sppc.dll            ["%_hookPath%\sppcs.dll"] [Successful]
 if defined exhook (
-echo Sao chep %_hook% tuy chinh sang      ["%_hookPath%\sppc.dll"] [Successful]
+echo Copying Custom %_hook% to            ["%_hookPath%\sppc.dll"] [Successful]
 ) else (
-echo Giai nen %_hook% tuy chinh sang      ["%_hookPath%\sppc.dll"] [Successful]
+echo Extracting Custom %_hook% to         ["%_hookPath%\sppc.dll"] [Successful]
 )
 
 goto :oh_hookinstall_error
@@ -3865,17 +3881,17 @@ goto :oh_hookinstall_error
 )
 
 echo:
-if defined _osppPath68 (echo Doi ten OSPPC.DLL sang sppcs.dll         ["%_osppPath68%\sppcs.dll"])
-if defined _osppPath86 (echo Doi ten OSPPC.DLL sang sppcs.dll         ["%_osppPath86%\sppcs.dll"])
+if defined _osppPath68 (echo Renaming OSPPC.DLL to sppcs.dll         ["%_osppPath68%\sppcs.dll"])
+if defined _osppPath86 (echo Renaming OSPPC.DLL to sppcs.dll         ["%_osppPath86%\sppcs.dll"])
 if defined exhook (
-if defined _osppPath68 (echo Sao chep %_hook68% tuy chinh sang     ["%_osppPath68%\OSPPC.DLL"])
-if defined _osppPath86 (echo Sao chep %_hook86% tuy chinh sang     ["%_osppPath86%\OSPPC.DLL"])
+if defined _osppPath68 (echo Copying Custom %_hook68% to            ["%_osppPath68%\OSPPC.DLL"])
+if defined _osppPath86 (echo Copying Custom %_hook86% to            ["%_osppPath86%\OSPPC.DLL"])
 ) else (
-if defined _osppPath68 (echo Giai nen %_hook68% tuy chinh sang     ["%_osppPath68%\OSPPC.DLL"])
-if defined _osppPath86 (echo Giai nen %_hook86% tuy chinh sang     ["%_osppPath86%\OSPPC.DLL"])
+if defined _osppPath68 (echo Extracting Custom %_hook68% to         ["%_osppPath68%\OSPPC.DLL"])
+if defined _osppPath86 (echo Extracting Custom %_hook86% to         ["%_osppPath86%\OSPPC.DLL"])
 )
 
-echo Lien ket sppcs.dll da doi ten             ["%_hookPath%\sppcs.dll"]
+echo Symlinking Renamed sppcs.dll            ["%_hookPath%\sppcs.dll"]
 
 ::========================================================================================================================================
 
@@ -3883,15 +3899,15 @@ echo Lien ket sppcs.dll da doi ten             ["%_hookPath%\sppcs.dll"]
 
 if defined ierror (
 set error=1
-call :dk_color %Red% "Cai dat Ohook                           [That bai khi %ierror%]"
+call :dk_color %Red% "Installing Ohook                        [Failed to %ierror%]"
 echo:
 call :oh_checkapps
 if defined checknames (
-call :dk_color %Blue% "Dong [!checknames!] va thu lai."
-call :dk_color %Blue% "Neu van chua sua duoc, khoi dong lai may tinh va thu lai."
+call :dk_color %Blue% "Close [!checknames!] and try again."
+call :dk_color %Blue% "If it is still not fixed, reboot your machine using the restart option and try again."
 ) else (
-if /i not "%ierror%"=="Copy" call :dk_color %Blue% "Khoi dong lai may tinh va thu lai."
-if /i "%ierror%"=="Copy" call :dk_color %Blue% "Neu ban dung phan mem diet virus ben thu ba, kiem tra xem no co chan script khong."
+if /i not "%ierror%"=="Copy" call :dk_color %Blue% "Reboot your machine using the restart option and try again."
+if /i "%ierror%"=="Copy" call :dk_color %Blue% "If you are using any third-party antivirus, check if it is blocking the script."
 )
 echo:
 )
@@ -3900,9 +3916,9 @@ if not defined exhook if not defined ierror (
 if defined hasherror (
 set error=1
 set ierror=1
-call :dk_color %Red% "Chinh sua Hash cua sppcs.dll            [That bai]"
+call :dk_color %Red% "Modifying Hash of Custom sppcs.dll      [Failed]"
 ) else (
-echo Chinh sua Hash cua sppcs.dll            [Thanh cong]
+echo Modifying Hash of Custom sppcs.dll      [Successful]
 )
 )
 
@@ -3953,8 +3969,8 @@ if not %oVer%==14 set generickey=1
 call :dk_inskey "[!key!] [!_prod!] [!_lic!]"
 ) else (
 set error=1
-call :dk_color %Red% "Kiem tra san pham trong script          [Khong tim thay khoa Office %oVer%.0 !_prod! trong script]"
-call :dk_color %Blue% "Dam bao ban dang su dung phien ban moi nhat cua MAS."
+call :dk_color %Red% "Checking Product In Script              [Office %oVer%.0 !_prod! key not found in script]"
+call :dk_color %Blue% "Make sure you are using the latest version of MAS."
 set fixes=%fixes% %mas%
 call :dk_color %_Yellow% "%mas%"
 )
@@ -3967,7 +3983,7 @@ if defined winserver if defined _config if exist "%_oLPath%\Word2019VL_KMS_Clien
 echo %_oIds% | find /i "Retail" %nul1% && (
 set scaIsNeeded=1
 reg add %_config% /v SharedComputerLicensing /t REG_SZ /d "1" /f %nul1%
-echo Them SharedComputerLicensing Reg         [Thanh cong] [Needed on Server With Retail Office]"
+echo Adding SharedComputerLicensing Reg      [Successful] [Needed on Server With Retail Office]"
 )
 )
 
@@ -4003,23 +4019,23 @@ call :oh_ppcpath
 call :msiofficedata %2
 
 echo:
-echo Dang kich hoat Office...                [MSI ^| %_version% ^| %_oArch%]
+echo Activating Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID, dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found, aborting activation...]"
 exit /b
 )
 
 if defined noOsppc (
-call :dk_color %Red% "Kiem tra OSPPC.DLL                      [Khong tim thay. Dang huy...]"
+call :dk_color %Red% "Checking OSPPC.DLL                      [Not found. Aborting activation...]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 exit /b
 )
 
 if %oVer%==14 if defined SingleImage (
-echo Kiem tra san pham da cai dat             [Tim thay SingleImage, se su dung khoa Professional Retail de kich hoat]
+echo Checking Installed Products             [SingleImage product found, Professional Retail key will be used for activation]
 )
 
 call :oh_process
@@ -4076,12 +4092,12 @@ for %%# in (%_sidlist%) do set /a counter+=1
 
 if %counter% EQU 0 (
 set error=1
-call :dk_color %Red% "Kiem tra SID tai khoan nguoi dung       [Khong tim thay]"
+call :dk_color %Red% "Checking User Accounts SID              [Not Found]"
 exit /b
 )
 
 if %counter% GTR 10 (
-call :dk_color %Gray% "Kiem tra tong so tai khoan              [%counter%]"
+call :dk_color %Gray% "Checking Total User Accounts            [%counter%]"
 )
 
 ::==========================
@@ -4126,10 +4142,10 @@ reg unload HKU\!defname! %nul%
 
 if defined vnextexist (
 echo:
-call :dk_color %Gray% "Tai khoan Office dang dang nhap co ban quyen dang ky."
-call :dk_color %Blue% "Neu dang ky dang hoat dong, no se ghi de cac phuong thuc kich hoat khac."
-call :dk_color %Blue% "Neu sap het han, chay lai script kich hoat sau khi het han."
-call :dk_color2 %Blue% "Neu da het han va kich hoat that bai, xem ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color %Gray% "The logged-in Office account has a subscription license."
+call :dk_color %Blue% "If the subscription is active, it overrides other activation methods."
+call :dk_color %Blue% "If it is expiring soon, rerun the activation script after it expires."
+call :dk_color2 %Blue% "If it has already expired and activation fails, get help here - " %_Yellow% " %mas%troubleshoot"
 echo:
 )
 
@@ -4160,7 +4176,7 @@ reg delete "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\SoftwarePr
 reg delete "HKU\S-1-5-20\Software\Microsoft\OfficeSoftwareProtectionPlatform\Policies\0ff1ce15-a989-479d-af46-f275c6370663" /f %nul%
 reg delete "HKU\S-1-5-20\Software\Microsoft\OfficeSoftwareProtectionPlatform\Policies\59a52881-a989-479d-af46-f275c6370663" /f %nul%
 
-echo Xoa chan ban quyen Office                [Da xoa thanh cong tu tat ca %counter% tai khoan]
+echo Clearing Office License Blocks          [Successfully cleared from all %counter% user accounts]
 
 ::==========================
 
@@ -4183,7 +4199,7 @@ for %%# in (%_sidlist%) do (
 reg delete HKU\%%#\Software\Microsoft\Office\16.0\Common\Licensing\Resiliency /f %nul%
 reg add HKU\%%#\Software\Microsoft\Office\16.0\Common\Licensing\Resiliency /v "TimeOfLastHeartbeatFailure" /t REG_SZ /d "2040-01-01T00:00:00Z" /f %nul%
 )
-echo Them Registry bo qua kiem tra ban quyen  [Da them cho tat ca %counter% va tai khoan moi]
+echo Adding Registry to Skip License Check   [Successfully added to all %counter% ^& future new user accounts]
 )
 
 ::==========================
@@ -4226,9 +4242,9 @@ set upk_result=2
 )
 
 if defined ohookact if not %upk_result%==0 echo:
-if %upk_result%==1 echo Go cai dat khoa Other/Grace              [Thanh cong]
+if %upk_result%==1 echo Uninstalling Other/Grace Keys           [Successful]
 if %upk_result%==2 (
-call :dk_color %Red% "Go cai dat khoa Other/Grace              [That bai]"
+call :dk_color %Red% "Uninstalling Other/Grace Keys           [Failed]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
@@ -4245,8 +4261,8 @@ exit /b
 :oh_licrefresh
 
 if exist "%SysPath%\spp\store_test\2.0\tokens.dat" (
-%psc% "Stop-Service sppsvc -force; $sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
-if !errorlevel! NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+%psc% "Stop-Service sppsvc -force; $sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+if !errorlevel! NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 )
 exit /b
 
@@ -4582,7 +4598,7 @@ exit /b
 :oh_extractdll
 
 set b=
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':%_hook%\:.*';$encoded = ($f[1]) -replace '-', 'A' -replace '_', 'a';$bytes = [Con%b%vert]::FromBas%b%e64String($encoded); $PePath='%1'; $offset='%2'; $m=[System.IO.File]::ReadAllText('!_batp!') -split ':hexedit\:.*';. ([scriptblock]::Create($m[1]))" %nul2% | find /i "Error found" %nul1% && set hasherror=1
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':%_hook%\:.*';$encoded = ($f[1]) -replace '-', 'A' -replace '_', 'a';$bytes = [Con%b%vert]::FromBas%b%e64String($encoded); $PePath='%1'; $offset='%2'; $m=[IO.File]::ReadAllText('!_batp!') -split ':hexedit\:.*';. ([scriptblock]::Create($m[1]))" %nul2% | find /i "Error found" %nul1% && set hasherror=1
 exit /b
 
 :hexedit:
@@ -4622,7 +4638,7 @@ $Writer.Flush()
 
 # Write the current state of the MemoryStream to a temporary file
 $tempFilePath = "$env:windir\Temp\$([System.IO.Path]::GetRandomFileName())"
-[System.IO.File]::WriteAllBytes($tempFilePath, $MemoryStream.ToArray())
+[IO.File]::WriteAllBytes($tempFilePath, $MemoryStream.ToArray())
 
 # Update hash using the temporary file
 [int]$HeaderSum = 0
@@ -4645,7 +4661,7 @@ Remove-Item -Path $tempFilePath -Force
 $modifiedBytes = $MemoryStream.ToArray()
 
 # Write the modified bytes to the final file
-[System.IO.File]::WriteAllBytes($PePath, $modifiedBytes)
+[IO.File]::WriteAllBytes($PePath, $modifiedBytes)
 
 [void]$Imagehlp::MapFileAndCheckSum($PePath, [ref]$HeaderSum, [ref]$CheckSum)
 if ($HeaderSum -ne $CheckSum) {
@@ -4875,7 +4891,7 @@ set "_debug=0"
 cls
 color 07
 set KS=K%blank%MS
-title  Kich hoat TSforge %masver%
+title  TSforge Activation %masver%
 
 set _args=
 set _elev=
@@ -4907,8 +4923,8 @@ if /i not %_actmethod%==Auto set _unattended=1
 if %winbuild% LSS 7600 (
 reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5" /v Install %nul2% | find /i "0x1" %nul1% || (
 %eline%
-echo .NET 3.5 Framework chua duoc cai dat trong he thong.
-echo Cai dat tu duong link sau.
+echo .NET 3.5 Framework is not installed in your system.
+echo Install it using the following URL.
 echo:
 echo https://www.microsoft.com/en-us/download/details.aspx?id=25150
 if %_unattended%==0 start https://www.microsoft.com/en-us/download/details.aspx?id=25150
@@ -4923,40 +4939,40 @@ goto dk_done
 if %_unattended%==0 (
 cls
 if not defined terminal mode 76, 33
-title  Kich hoat TSforge %masver%
+title  TSforge Activation %masver%
 
 echo:
 echo:
 echo:
 echo        ______________________________________________________________
 echo: 
-echo               [1] Kich hoat - Windows
-echo               [2] Kich hoat - ESU
-echo               [3] Kich hoat - Office [Tat ca]
-echo               [4] Kich hoat - Office [Project/Visio]
-echo               [5] Kich hoat - Tat ca
+echo               [1] Activate - Windows
+echo               [2] Activate - ESU
+echo               [3] Activate - Office [All]
+echo               [4] Activate - Office [Project/Visio]
+echo               [5] Activate - All
 echo               _______________________________________________  
 echo: 
-echo                   Tuy chon nang cao:
+echo                   Advanced Options:
 echo:
-echo               [A] Kich hoat - Windows %KS% Host
-echo               [B] Kich hoat - Office %KS% Host
-echo               [C] Kich hoat - Windows 8/8.1 APPX Sideloading
-echo               [D] Kich hoat - Chon san pham thu cong
+echo               [A] Activate - Windows %KS% Host
+echo               [B] Activate - Office %KS% Host
+echo               [C] Activate - Windows 8/8.1 APPX Sideloading
+echo               [D] Activate - Manually Select Products
 if defined _vis (
-echo               [E] Dat lai  - Rearm/Timers
+echo               [E] Reset    - Rearm/Timers
 ) else (
-echo               [E] Dat lai  - Rearm/Timers/Tamper/Lock
+echo               [E] Reset    - Rearm/Timers/Tamper/Lock
 )
-echo               [F] Doi      - Phuong thuc kich hoat [%_actmethod%]
+echo               [F] Change   - Activation Method [%_actmethod%]
 echo               _______________________________________________       
 echo:
-echo               [6] Go kich hoat TSforge
-echo               [7] Tai Office
+echo               [6] Remove TSforge Activation
+echo               [7] Download Office
 echo               [0] %_exitmsg%
 echo        ______________________________________________________________
 echo:
-call :dk_color2 %_White% "            " %_Green% "Chon tuy chon bang ban phim..."
+call :dk_color2 %_White% "            " %_Green% "Choose a menu option using your keyboard..."
 choice /C:12345ABCDEF670 /N
 set _el=!errorlevel!
 
@@ -4997,25 +5013,25 @@ echo                  Builds ^<  26100 - ZeroCID
 echo              __________________________________________________
 echo: 
 echo              [2] StaticCID
-echo                  Can ket noi Internet
-echo                  Khong danh cho Windows 7 hoac cu hon
+echo                  Needs Internet
+echo                  Not for Windows 7 or older
 echo              __________________________________________________
 echo:
 echo              [3] ZeroCID
-echo                  Hoat dong on dinh tren cac ban build duoi 26100
-echo                  Khong hoat dong tren cac ban build tren 26100.4188
+echo                  Works reliably on builds below 26100
+echo                  Does not work on builds above 26100.4188
 echo              __________________________________________________
 echo:
 echo              [4] KMS4k
-echo                  Chi ban quyen Volume
-echo                  Kich hoat tren 4000 nam
+echo                  Volume licenses only
+echo                  Activates for 4000+ years
 echo              __________________________________________________
 echo:
-echo              [5] Tim hieu them
+echo              [5] Learn More
 echo              [0] %_exitmsg%
 echo        ______________________________________________________________
 echo:
-call :dk_color2 %_White% "            " %_Green% "Chon tuy chon bang ban phim..."
+call :dk_color2 %_White% "            " %_Green% "Choose a menu option using your keyboard..."
 choice /C:123450 /N
 set _el=!errorlevel!
 
@@ -5039,21 +5055,21 @@ mode 125, %height%
 if exist "%SysPath%\spp\store_test\" mode 134, %height%
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=%height%;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  Kich hoat TSforge %masver%
+title  TSforge Activation %masver%
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] tep bi thieu, dang huy...
+echo [%SysPath%\%_slexe%] file is missing, aborting...
 echo:
 if not defined results (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay DISM Restore va SFC Scan."
-call :dk_color %Blue% "Sau do, khoi dong lai he thong va thu kich hoat lai."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run DISM Restore and SFC Scan options."
+call :dk_color %Blue% "After that, restart system and try activation again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu van gap loi nay, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If it still shows the same error, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -5061,12 +5077,12 @@ goto dk_done
 for /f "delims=" %%a in ('%psc% "[System.Environment]::Version.Major" %nul6%') do if "%%a"=="2" (
 reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5" /v Install %nul2% | find /i "0x1" %nul1% || (
 %eline%
-echo .NET 3.5 Framework bi loi hoac thieu. Dang huy...
+echo .NET 3.5 Framework is corrupt or missing. Aborting...
 if exist "%SysPath%\spp\tokens\skus\Security-SPP-Component-SKU-Embedded" (
-echo Cai dat .NET Framework 4.8 va Windows Management Framework 5.1
+echo Install .NET Framework 4.8 and Windows Management Framework 5.1
 )
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 )
@@ -5076,10 +5092,10 @@ sc query wlms | find /i "RUNNING" %nul% && (
 sc stop %_slser% %nul%
 if !errorlevel! EQU 1051 (
 %eline%
-echo Dich vu Eval WLMS dang chay, khong the dung dich vu %_slser%. Dang huy...
-echo Cai dat phien ban Non-Eval cho Windows build %winbuild%.
+echo Evaluation WLMS service is running, %_slser% service can not be stopped. Aborting...
+echo Install Non-Eval version for Windows build %winbuild%.
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 )
@@ -5120,7 +5136,7 @@ set tsmethod=ZeroCID
 
 if %winbuild% LSS 9200 if /i %tsmethod%==StaticCID (
 %eline%
-echo Phuong thuc StaticCID chi ho tro tren Windows 8 tro len.
+echo StaticCID method is supported only on Windows 8 and later.
 goto dk_done
 )
 
@@ -5140,16 +5156,16 @@ if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo Kiem tra ket noi Internet               [Da ket noi!ping_f!]
+echo Checking Internet Connection            [Connected!ping_f!]
 ) else (
 if /i %_actmethod%==Auto if not %_actman%==1 set tsmethod=KMS4k
 if /i !tsmethod!==KMS4k (
-call :dk_color %Red% "Kiem tra ket noi Internet               [Khong ket noi]"
-call :dk_color %Blue% "Chuyen sang kich hoat KMS4k vi phuong thuc StaticCID can Internet."
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Switching To KMS4k activation because Internet is needed for StaticCID method."
 ) else (
 set error=1
-call :dk_color %Red% "Kiem tra ket noi Internet               [Khong ket noi]"
-call :dk_color %Blue% "Can ket noi Internet cho phuong thuc TSforge StaticCID."
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Internet is required for TSforge StaticCID option."
 )
 echo:
 )
@@ -5157,7 +5173,7 @@ echo:
 
 ::========================================================================================================================================
 
-echo Dang bat dau kiem tra chan doan...
+echo Initiating Diagnostic Tests...
 
 set "_serv=%_slser% Winmgmt"
 
@@ -5168,15 +5184,15 @@ call :dk_errorcheck
 
 call :ts_getedition
 if not defined tsedition (
-call :dk_color %Red% "Kiem tra Windows Edition ID             [Khong tim thay trong ban quyen da cai, dang huy...]"
+call :dk_color %Red% "Checking Windows Edition ID             [Not found in installed licenses, aborting...]"
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto :dk_done
 )
 
 if /i !tsmethod!==KMS4k (
 call :_taskclear-cache
-echo Xoa bo nho dem %KS%                      [Thanh cong]
+echo Clearing %KS% Cache                      [Successful]
 )
 
 ::========================================================================================================================================
@@ -5194,7 +5210,7 @@ if not %_actwin%==1 goto :ts_esu
 ::  Check if system is permanently activated or not
 
 echo:
-echo Dang xu ly Windows...
+echo Processing Windows...
 
 echo %tsedition% | find /i "Eval" %nul1% && (
 goto :ts_wineval
@@ -5208,7 +5224,7 @@ if !UBR! LSS 4188 (set dontcheckact=1)
 
 if not defined dontcheckact call :ts_checkwinperm
 if defined _perm (
-call :dk_color %Gray% "Kiem tra kich hoat OS                   [Windows da duoc kich hoat vinh vien]"
+call :dk_color %Gray% "Checking OS Activation                  [Windows is already permanently activated]"
 goto :ts_esu
 )
 
@@ -5217,27 +5233,27 @@ if defined _vis goto :ts_winvista
 
 set tempid=
 if /i %tsmethod%==KMS4k (set keytype=ks) else (set keytype=zero)
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set tempid=%%a)
 )
 
 if defined tempid (
-echo Kiem tra ID kich hoat                   [%tempid%] [%tsedition%]
+echo Checking Activation ID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay] [%tsedition%] [%osSKU%]"
+call :dk_color %Red% "Checking Activation ID                  [Not Found] [%tsedition%] [%osSKU%]"
 set error=1
 if /i %tsmethod%==KMS4k (
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 )
 goto :ts_esu
 )
 
 if defined winsub (
-call :dk_color %Blue% "Phat hien Windows Subscription [SKU ID-%slcSKU%]. Script se kich hoat phien ban goc [SKU ID-%regSKU%]."
+call :dk_color %Blue% "Windows Subscription [SKU ID-%slcSKU%] found. Script will activate base edition [SKU ID-%regSKU%]."
 echo:
 )
 
@@ -5306,12 +5322,12 @@ set tempid=%%A
 )
 
 if not defined key (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [%tsedition% SKU-%osSKU% khoa %KS% khong kha dung]"
-call :dk_color %Blue% "Su dung phuong thuc kich hoat ZeroCID tu menu truoc."
+call :dk_color %Red% "Checking Activation ID                  [%tsedition% SKU-%osSKU% %KS% key is not available]"
+call :dk_color %Blue% "Use ZeroCID activation method from the previous menu."
 goto :ts_esu
 )
 
-echo Kiem tra ID kich hoat                   [%tempid%] [%tsedition%]
+echo Checking Activation ID                  [%tempid%] [%tsedition%]
 
 set oldks=1
 set generickey=1
@@ -5388,12 +5404,12 @@ set tempid=%%A
 
 if not defined key (
 set error=1
-call :dk_color %Red% "Kiem tra ID kich hoat                   [%tsedition% SKU-%osSKU% khong tim thay trong he thong]"
+call :dk_color %Red% "Checking Activation ID                  [%tsedition% SKU-%osSKU% not found in the system]"
 call :dk_color %Blue% "%_fixmsg%"
 goto :ts_esu
 )
 
-echo Kiem tra ID kich hoat                   [%tempid%] [%tsedition%]
+echo Checking Activation ID                  [%tempid%] [%tsedition%]
 
 set generickey=1
 call :dk_inskey "[%key%]"
@@ -5404,14 +5420,14 @@ goto :ts_esu
 
 :ts_wineval
 
-call :dk_color %Gray% "Kiem tra phien ban OS                   [%tsedition%] [Tim thay phien ban danh gia]"
-call :dk_color %Blue% "Phien ban danh gia khong the kich hoat ngoai thoi gian danh gia."
+call :dk_color %Gray% "Checking OS Edition                     [%tsedition%] [Evaluation edition found]"
+call :dk_color %Blue% "Evaluation editions cannot be activated outside of evaluation period."
 
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
-call :dk_color %Blue% "Script se dat lai thoi gian danh gia, nhung de kich hoat Windows vinh vien,"
-call :dk_color %Blue% "Quay lai menu chinh va su dung tuy chon [Doi phien ban] va doi sang phien ban Non-eval."
+call :dk_color %Blue% "Script will reset evaluation period, but to permanently activate Windows,"
+call :dk_color %Blue% "Go back to main menu and use [Change Edition] option and change to Non-eval edition."
 ) else (
-call :dk_color %Blue% "Script se dat lai thoi gian danh gia, nhung de kich hoat Windows vinh vien, cai phien ban Non-eval."
+call :dk_color %Blue% "Script will reset evaluation period, but to permanently activate Windows, install Non-eval edition."
 call :dk_color %_Yellow% "%mas%evaluation_editions"
 )
 
@@ -5428,11 +5444,11 @@ if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo Kiem tra ket noi Internet               [Da ket noi%ping_f%]
+echo Checking Internet Connection            [Connected%ping_f%]
 ) else (
 set error=1
-call :dk_color %Red% "Kiem tra ket noi Internet               [Khong ket noi]"
-call :dk_color %Blue% "Can ket noi Internet de kich hoat Windows ban danh gia."
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Internet is required for Windows Evaluation activation."
 )
 
 ::  List of products lacking activable evaluation keys and ISOs
@@ -5494,28 +5510,28 @@ echo "%allapps%" | find /i "%%A" %nul1% && (
 set key=%%B
 set eval=1
 if /i "%%E"=="NoAct" set noact=1
-echo Kiem tra ID kich hoat                   [%%A] [%%C]
+echo Checking Activation ID                  [%%A] [%%C]
 )
 )
 )
 
 if not defined key (
 set error=1
-call :dk_color %Red% "Kiem tra ID kich hoat                   [%tsedition% khong tim thay trong script]"
-call :dk_color %Blue% "Dam bao ban dang su dung phien ban moi nhat cua script."
+call :dk_color %Red% "Checking Activation ID                  [%tsedition% not found in the script]"
+call :dk_color %Blue% "Make sure you are using the updated version of the script."
 goto :ts_esu
 )
 
 set resetstuff=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
 set resetstuff=
 if !errorlevel!==3 (
 set error=1
-call :dk_color %Red% "Dat lai Rearm / GracePeriod             [That bai]"
+call :dk_color %Red% "Resetting Rearm / GracePeriod           [Failed]"
 call :dk_color %Blue% "%_fixmsg%"
 goto :ts_esu
 ) else (
-echo Dat lai Rearm / GracePeriod             [Thanh cong]
+echo Resetting Rearm / GracePeriod           [Successful]
 )
 
 set generickey=1
@@ -5527,11 +5543,11 @@ call :dk_inskey "[%key%]"
 
 if not %_actesu%==1 goto :ts_off
 if /i %tsmethod%==KMS4k (
-call :dk_color %Red% "Bo qua Windows ESU                     [Phuong thuc KMS4k khong ho tro voi Windows ESU]"
+call :dk_color %Red% "Skipping Windows ESU                    [KMS4k method is not supported with Windows ESU]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 goto :ts_off
 )
@@ -5539,14 +5555,14 @@ goto :ts_off
 ::  Process Windows ESU
 
 echo:
-echo Dang xu ly Windows ESU...
+echo Processing Windows ESU...
 
 set esuexist=
 set esuexistsup=
 set esueditionlist=
 set esuexistbutnosup=
 
-for %%# in (EnterpriseS IoTEnterpriseS IoTEnterpriseSK) do (if /i %tsedition%==%%# set isltsc=1)
+if %winbuild% GTR 14393 for %%# in (EnterpriseS IoTEnterpriseS IoTEnterpriseSK) do (if /i %tsedition%==%%# set isltsc=1)
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" set isServer=1
 
 if /i %tsedition%==Embedded (
@@ -5584,6 +5600,7 @@ REM Windows8.1
 11be7019-a309-4763-9a09-091d1722ffe3_Client-FES-ESU-Year3[1-3y]_-EmbeddedIndustry-EmbeddedIndustryE-
 REM WindowsServer2012/2012R2
 55b1dd2d-2209-4ea0-a805-06298bad25b3_Server-ESU-Year3[1-3y]_-ServerDatacenter-ServerDatacenterCore-ServerDatacenterV-ServerDatacenterVCore-ServerStandard-ServerStandardCore-ServerStandardV-ServerStandardVCore-
+1b60284a-63b5-42da-8ec9-eaab825e2bc8_Server-ESU-Year5[4-5y]_-ServerDatacenter-ServerDatacenterCore-ServerDatacenterV-ServerDatacenterVCore-ServerStandard-ServerStandardCore-ServerStandardV-ServerStandardVCore-
 REM Windows10
 f520e45e-7413-4a34-a497-d2765967d094_Client-ESU-Year1_-%w10EsuEditions%-%w10EsuEditionsLaterAdded%
 1043add5-23b1-4afb-9a0f-64343c8f3f8d_Client-ESU-Year2_-%w10EsuEditions%-%w10EsuEditionsLaterAdded%
@@ -5592,6 +5609,9 @@ f520e45e-7413-4a34-a497-d2765967d094_Client-ESU-Year1_-%w10EsuEditions%-%w10EsuE
 REM WindowsServer2016
 91bcac0a-d7d3-4d2b-bd0c-72fed675f01b_Server-ESU-Year3[1-3y]_-ServerDatacenter-ServerDatacenterCore-ServerDatacenterV-ServerDatacenterVCore-ServerStandard-ServerStandardCore-ServerStandardV-ServerStandardVCore-
 4cd0ab30-73a4-4dde-972c-512f05be31df_Server-ESU-Year6[4-6y]_-ServerDatacenter-ServerDatacenterCore-ServerDatacenterV-ServerDatacenterVCore-ServerStandard-ServerStandardCore-ServerStandardV-ServerStandardVCore-
+REM Windows10LTSB2016
+f2571710-2c24-4677-8fb5-a07d41d3c1aa_Client-ESU-Year3[1-3y]_-EnterpriseS-EnterpriseSN-
+22badfe6-7d55-4485-874b-7ec317442134_Client-ESU-Year6[4-6y]_-EnterpriseS-EnterpriseSN-
 ) do (
 for /f "tokens=1-3 delims=_" %%A in ("%%#") do (
 echo "%allapps%" | find /i "%%A" %nul1% && (
@@ -5601,7 +5621,7 @@ set esuexistsup=1
 set esueditionlist=
 set esuexistbutnosup=
 set tsids=!tsids! %%A
-echo Kiem tra ID kich hoat                   [%%A] [%%B]
+echo Checking Activation ID                  [%%A] [%%B]
 ) || (
 if not defined esueditionlist set esueditionlist=%%C
 set esuexistbutnosup=1
@@ -5620,7 +5640,7 @@ goto :ts_off
 if defined esuexistsup (
 echo "%tsids%" | find /i "4220f546-f522-46df-8202-4d07afd26454" %nul1% && (
 echo "%tsids%" | find /i "7e94be23-b161-4956-a682-146ab291774c" %nul1% || (
-call :dk_color %Gray% "De co ban quyen Client-ESU-Year6[4-6y], cai dat cap nhat tu link ben duoi."
+call :dk_color %Gray% "To get Client-ESU-Year6[4-6y] license, install updates from the below URL."
 call :dk_color %Blue% "%mas%tsforge#windows-esu"
 )
 )
@@ -5628,18 +5648,18 @@ goto :ts_off
 )
 
 if defined isltsc (
-call :dk_color %Gray% "Kiem tra ID kich hoat                   [%tsedition% LTSC da co thoi gian ho tro dai hon, ESU khong ap dung]"
+call :dk_color %Gray% "Checking Activation ID                  [%tsedition% LTSC already has longer support, ESU is not applicable]"
 goto :ts_off
 )
 
 if defined esuexistbutnosup (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Ban quyen ESU hien tai khong ho tro cho %tsedition%]"
+call :dk_color %Red% "Checking Activation ID                  [Currently installed ESU License is not supported for %tsedition%]"
 echo:
 if %winbuild% EQU 19045 if not defined w10EsuEditionsLaterAdded (
-call :dk_color %Blue% "De co phien ban moi nhat, vao cai dat Windows va chay Windows Update. Sau do, thu lai script."
+call :dk_color %Blue% "To get latest version, go to Windows settings and run Windows Update. After that, try the script again."
 goto :ts_off
 )
-call :dk_color %Blue% "Quay lai Menu chinh, chon Doi phien ban Windows va doi sang bat ky phien ban nao ben duoi."
+call :dk_color %Blue% "Go back to Main Menu, select Change Windows Edition option and change to any of the below listed editions."
 echo [%esueditionlist%]
 goto :ts_off
 )
@@ -5647,16 +5667,16 @@ goto :ts_off
 set esuavail=
 if defined _vis if defined isServer set esuavail=1
 if %winbuild% LEQ 7602 if not defined _vis if not defined isThinpc set esuavail=1
-if %winbuild% GTR 7602 if %winbuild% LSS 14393 if defined isServer set esuavail=1
+if %winbuild% GTR 7602 if %winbuild% LEQ 14393 if defined isServer set esuavail=1
 if %winbuild% GEQ 10240 if %winbuild% LEQ 19045 if not defined isServer set esuavail=1
 if %winbuild% EQU 9600 set esuavail=1
 
 if defined esuavail (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay ban quyen ESU, dam bao Windows da cap nhat day du]"
+call :dk_color %Red% "Checking Activation ID                  [ESU license is not found, make sure Windows is fully updated]"
 set fixes=%fixes% %mas%tsforge#windows-esu
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%tsforge#windows-esu"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%tsforge#windows-esu"
 ) else (
-call :dk_color %Gray% "Kiem tra ID kich hoat                   [ESU khong kha dung cho %winos%]"
+call :dk_color %Gray% "Checking Activation ID                  [ESU is not available for %winos%]"
 )
 
 ::========================================================================================================================================
@@ -5667,8 +5687,8 @@ if not %_actoff%==1 goto :ts_act
 
 if %winbuild% LSS 9200 (
 echo:
-call :dk_color %Gray% "Kiem tra Office ho tro                  [TSforge cho Office ho tro tren Windows 8 tro len]"
-call :dk_color %Blue% "Tren Windows Vista / 7, su dung tuy chon kich hoat Ohook cho Office."
+call :dk_color %Gray% "Checking Supported Office               [TSforge for Office is supported on Windows 8 and later versions]"
+call :dk_color %Blue% "On Windows Vista / 7, use Ohook activation option for Office instead."
 goto :ts_act
 )
 
@@ -5691,7 +5711,7 @@ if exist "%%~A\Microsoft %%~G\root\vfs\%%#\sppc*dll" set ohook=1
 
 if defined ohook (
 echo:
-call :dk_color %Gray% "Kiem tra Ohook                          [Ohook da duoc cai dat cho Office]"
+call :dk_color %Gray% "Checking Ohook                          [Ohook activation is already installed for Office]"
 )
 
 ::  Check unsupported office versions
@@ -5708,8 +5728,8 @@ for /f "skip=2 tokens=2*" %%a in ('"reg query %_68%\14.0\Common\InstallRoot /v P
 
 if not "%o14msi%%o14c2r%"=="" (
 echo:
-call :dk_color %Red% "Kiem tra cai dat Office khong ho tro    [ %o14msi%%o14c2r%]"
-if defined o14msi call :dk_color %Blue% "Su dung tuy chon kich hoat Ohook cho Office 2010."
+call :dk_color %Red% "Checking Unsupported Office Install     [ %o14msi%%o14c2r%]"
+if defined o14msi call :dk_color %Blue% "Use Ohook activation option for Office 2010."
 )
 
 if %winbuild% GEQ 10240 %psc% "Get-AppxPackage -name "Microsoft.MicrosoftOfficeHub"" | find /i "Office" %nul1% && (
@@ -5734,7 +5754,7 @@ set error1=%errorlevel%
 
 if defined o16c2r if %error1% EQU 1060 (
 echo:
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 16.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 16.0 files found]"
 set o16c2r=
 set error=1
 )
@@ -5744,7 +5764,7 @@ set error2=%errorlevel%
 
 if defined o15c2r if %error1% EQU 1060 if %error2% EQU 1060 (
 echo:
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 15.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 15.0 files found]"
 set o15c2r=
 set error=1
 )
@@ -5754,20 +5774,20 @@ set error=1
 set showfix=1
 echo:
 if not "%o14msi%%o14c2r%"=="" (
-call :dk_color %Red% "Kiem tra cai dat Office ho tro          [Khong tim thay]"
+call :dk_color %Red% "Checking Supported Office Install       [Not Found]"
 ) else (
 if %_actwin%==0 (
-call :dk_color %Red% "Kiem tra Office da cai dat              [Khong tim thay]"
+call :dk_color %Red% "Checking Installed Office               [Not Found]"
 ) else (
-call :dk_color %Gray% "Kiem tra Office da cai dat              [Khong tim thay]"
+call :dk_color %Gray% "Checking Installed Office               [Not Found]"
 )
 )
 
 if defined ohub (
 echo:
-echo Ban chi cai dat ung dung Office Dashboard; can cai dat phien ban day du cua Office.
+echo You only have the Office Dashboard app installed; you need to install the full version of Office.
 )
-call :dk_color %Blue% "Tai va cai dat Office tu link ben duoi, sau do thu lai."
+call :dk_color %Blue% "Download and install Office from the URL below, then try again."
 if %_actwin%==0 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto :ts_act
@@ -5779,7 +5799,7 @@ if not "%o14c2r%%o14msi%"=="" set multioffice=1
 
 if defined multioffice (
 echo:
-call :dk_color %Gray% "Kiem tra cai dat nhieu Office           [Tim thay. Nen chi cai mot phien ban]"
+call :dk_color %Gray% "Checking Multiple Office Install        [Found. Recommended to install one version only]"
 )
 
 ::========================================================================================================================================
@@ -5821,10 +5841,10 @@ if not defined _lat set "_oIds= !_oIds! %%#ProRetail "
 set uwpinfo=%o16uwp_path:C:\Program Files\WindowsApps\Microsoft.Office.Desktop_=%
 
 echo:
-echo Dang xu ly Office...                    [UWP ^| %uwpinfo%]
+echo Processing Office...                    [UWP ^| %uwpinfo%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ts_starto15c2r
 )
@@ -5861,10 +5881,10 @@ set "pkeypath=%_oRoot%\Office15\pkeyconfig-office.xrm-ms"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo Dang xu ly Office...                    [C2R ^| %_version% ^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ts_starto16c2r
 )
@@ -5903,10 +5923,10 @@ set "pkeypath=%_oRoot%\Office16\pkeyconfig-office.xrm-ms"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo Dang xu ly Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ts_startmsi
 )
@@ -5929,7 +5949,7 @@ reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" /reg:
 )
 reg delete "%kmskey%" /f %nul%
 reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" %nul%
-echo Them Registry de ngan thong bao          [Thanh cong]
+echo Adding a Registry to Prevent Banner     [Successful]
 )
 )
 
@@ -5956,29 +5976,29 @@ goto :ts_act
 ::  Process Windows K-M-S host
 
 echo:
-echo Dang xu ly Windows %KS% Host...
+echo Processing Windows %KS% Host...
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Bo qua Windows %KS% Host                 [Phuong thuc KMS4k khong ho tro voi Windows %KS% Host]"
+call :dk_color %Red% "Skipping Windows %KS% Host               [KMS4k method is not supported with Windows %KS% Host]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 goto :ts_act
 )
 
 echo:
 if %winbuild% GEQ 10586 (
-call :dk_color %Gray% "Voi ban quyen %KS% Host, he thong co the tu doi phien ban Windows. Day la loi cua Windows va co the bo qua."
+call :dk_color %Gray% "With %KS% Host license, system may randomly change Windows Edition later. It is a Windows issue and can be safely ignored."
 )
-call :dk_color %Gray% "Ban quyen %KS% Host [Khong nham voi %KS% Client] khien dich vu %_slser% chay lien tuc."
-call :dk_color %Blue% "Chi su dung kich hoat nay khi can, ban co the quay lai kich hoat binh thuong tu menu truoc."
+call :dk_color %Gray% "%KS% Host [Not to be confused with %KS% Client] license causes the %_slser% service to run continuously."
+call :dk_color %Blue% "Only use this activation when necessary, you can revert to normal activation from the previous menu."
 
 if %_unattended%==0 (
 echo:
-choice /C:0F /N /M "> [0] Quay lai  [F] Tiep tuc : "
+choice /C:0F /N /M "> [0] Go back  [F] Continue : "
 if !errorlevel!==1 exit /b
 echo:
 )
@@ -5995,25 +6015,25 @@ if %winbuild% GEQ 10586 (
 for %%# in ("%SysPath%\spp\tokens\skus\%tsedition%\*CSVLK*.xrm-ms") do (
 if defined _arr (set "_arr=!_arr!;"%SysPath%\spp\tokens\skus\%tsedition%\%%~nx#"") else (set "_arr="%SysPath%\spp\tokens\skus\%tsedition%\%%~nx#"")
 )
-if defined _arr %psc% "$sls = Get-WmiObject %sps%; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'" %nul%
+if defined _arr %psc% "$sls = Get-WmiObject %sps%; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'" %nul%
 )
 
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set tempid=%%a)
 )
 
 if defined tempid (
-echo Kiem tra ID kich hoat                   [%tempid%] [%tsedition%]
+echo Checking Activation ID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay] [%tsedition%] [%osSKU%]"
-call :dk_color %Blue% "Khong tim thay ban quyen %KS% Host tren he thong. No kha dung cho cac phien ban ben duoi."
-call :dk_color %Blue% "Professional, Education, ProfessionalWorkstation, Enterprise, EnterpriseS, va cac phien ban Server, v.v."
+call :dk_color %Red% "Checking Activation ID                  [Not Found] [%tsedition%] [%osSKU%]"
+call :dk_color %Blue% "%KS% Host license is not found on your system. It is available for the below editions."
+call :dk_color %Blue% "Professional, Education, ProfessionalWorkstation, Enterprise, EnterpriseS, and Server editions, etc."
 goto :ts_act
 )
 
 if defined winsub (
 echo:
-call :dk_color %Blue% "Phat hien Windows Subscription [SKU ID-%slcSKU%]. Script se kich hoat phien ban goc [SKU ID-%regSKU%]."
+call :dk_color %Blue% "Windows Subscription [SKU ID-%slcSKU%] found. Script will activate base edition [SKU ID-%regSKU%]."
 )
 
 goto :ts_act
@@ -6053,11 +6073,11 @@ set tempid=%%A
 )
 
 if defined key (
-echo Kiem tra ID kich hoat                   [%tempid%] [%tsedition%]
+echo Checking Activation ID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay] [%tsedition%] [%osSKU%]"
-call :dk_color %Blue% "Khong tim thay ban quyen %KS% Host tren he thong. No kha dung cho cac phien ban ben duoi."
-call :dk_color %Blue% "Business, BusinessN, Enterprise, EnterpriseN, va cac phien ban Server, v.v."
+call :dk_color %Red% "Checking Activation ID                  [Not Found] [%tsedition%] [%osSKU%]"
+call :dk_color %Blue% "%KS% Host license is not found on your system. It is available for the below editions."
+call :dk_color %Blue% "Business, BusinessN, Enterprise, EnterpriseN, and Server editions, etc."
 goto :ts_act
 )
 
@@ -6072,21 +6092,21 @@ goto :ts_act
 ::  Process Office K-M-S host
 
 echo:
-echo Dang xu ly Office %KS% Host...
+echo Processing Office %KS% Host...
 
 if defined _vis (
 echo:
-call :dk_color %Blue% "Windows Vista va Server 2008 khong ho tro cai dat Office KMS Host."
+call :dk_color %Blue% "Windows Vista and Server 2008 do not support the installation of Office KMS Host."
 goto :ts_act
 )
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Bo qua Office %KS% Host                  [Phuong thuc KMS4k khong ho tro voi Office %KS% Host]"
+call :dk_color %Red% "Skipping Office %KS% Host                [KMS4k method is not supported with Office %KS% Host]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 goto :ts_act
 )
@@ -6109,19 +6129,19 @@ for /f "tokens=1-2 delims=_" %%A in ("%%#") do (
 echo "%ohostids%" | find /i "%%A" %nul1% && (
 set ohostexist=1
 set tsids=!tsids! %%A
-echo Kiem tra ID kich hoat                   [%%A] [%%B]
+echo Checking Activation ID                  [%%A] [%%B]
 )
 )
 )
 
 if not defined ohostexist (
-call :dk_color %Gray% "Kiem tra ID kich hoat                   [Khong tim thay cho Office %KS% Host]"
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%tsforge#office-kms-host"
+call :dk_color %Gray% "Checking Activation ID                  [Not found for Office %KS% Host]"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%tsforge#office-kms-host"
 )
 
 echo:
-call :dk_color %Gray% "Ban quyen %KS% Host [Khong nham voi %KS% Client] khien dich vu sppsvc chay lien tuc."
-call :dk_color %Gray% "Chi su dung kich hoat nay khi can thiet."
+call :dk_color %Gray% "%KS% Host [Not to be confused with %KS% Client] license causes the sppsvc service to run continuously."
+call :dk_color %Gray% "Only use this activation when necessary."
 
 goto :ts_act
 
@@ -6132,24 +6152,24 @@ goto :ts_act
 ::  Process Windows 8/8.1 APPX Sideloading
 
 echo:
-echo Dang xu ly Windows 8/8.1 APPX Sideloading...
+echo Processing Windows 8/8.1 APPX Sideloading...
 
 if %winbuild% LSS 9200 set noappx=1
 if %winbuild% GTR 9600 set noappx=1
 
 echo:
 if defined noappx (
-call :dk_color %Gray% "Kiem tra ID kich hoat                   [Tinh nang APPX Sideloading chi kha dung tren Windows 8/8.1]"
+call :dk_color %Gray% "Checking Activation ID                  [APPX Sideloading feature is available only on Windows 8/8.1]"
 goto :dk_done
 )
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Bo qua Windows 8/8.1 APPX              [Phuong thuc KMS4k khong ho tro voi Windows 8/8.1 APPX]"
+call :dk_color %Red% "Skipping Windows 8/8.1 APPX             [KMS4k method is not supported with Windows 8/8.1 APPX]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 goto :dk_done
 )
@@ -6167,14 +6187,14 @@ for /f "tokens=1-2 delims=_" %%A in ("%%#") do (
 echo "%allapps%" | find /i "%%A" %nul1% && (
 set appxexist=1
 set tsids=!tsids! %%A
-echo Kiem tra ID kich hoat                   [%%A] [%%B]
+echo Checking Activation ID                  [%%A] [%%B]
 )
 )
 )
 
 if not defined appxexist (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay]"
-call :dk_color %Blue% "Tinh nang APPX Sideloading chi kha dung tren phien ban Pro tro len."
+call :dk_color %Red% "Checking Activation ID                  [Not found]"
+call :dk_color %Blue% "APPX Sideloading feature is available only on Pro and higher level editions."
 )
 
 goto :ts_act
@@ -6185,21 +6205,21 @@ goto :ts_act
 
 echo:
 if defined _vis (
-echo Dang xu ly dat lai Rearm / Timers...
+echo Processing Reset of Rearm / Timers...
 ) else (
-echo Dang xu ly dat lai Rearm / Timers / Tamper / Lock...
+echo Processing Reset of Rearm / Timers / Tamper / Lock...
 )
 echo:
 
 set resetstuff=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
 
 if %errorlevel%==3 (
-call :dk_color %Red% "Dat lai that bai."
+call :dk_color %Red% "Reset Failed."
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 ) else (
-call :dk_color %Green% "Qua trinh dat lai da thanh cong."
+call :dk_color %Green% "Reset process has been successfully done."
 )
 
 goto :dk_done
@@ -6209,40 +6229,40 @@ goto :dk_done
 :ts_actman
 
 echo:
-echo Dang xu ly kich hoat thu cong...
+echo Processing Manual Activation...
 echo:
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Bo qua kich hoat thu cong              [Phuong thuc KMS4k khong ho tro]"
+call :dk_color %Red% "Skipping Manual Activation              [KMS4k method is not supported with it]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 goto :dk_done
 )
 
-call :dk_color %Gray% "Tuy chon nay danh cho nguoi dung nang cao, nhung nguoi da biet minh dang lam gi."
-call :dk_color %Blue% "Mot so ID kich hoat co the gay loi he thong [MUI khong khop], hoac thay doi khong the hoang nguyen [CloudEdition v.v.]."
+call :dk_color %Gray% "This option is for advanced users, those who already know what they are doing."
+call :dk_color %Blue% "Some activation IDs may cause system crash [MUI mismatch], or irreversible changes [CloudEdition etc]."
 
 if %_unattended%==1 (
 echo:
-for %%# in (%tsids%) do (echo ID kich hoat - %%#)
+for %%# in (%tsids%) do (echo Activation ID - %%#)
 goto :ts_act
 )
 
-call :dk_color %Blue% "Du script se co go cac ID do khoi danh sach, nhung khong dam bao hoan toan."
+call :dk_color %Blue% "Although the script will try to remove those IDs from the list, it is not fully guaranteed."
 echo:
-choice /C:0F /N /M "> [0] Quay lai  [F] Tiep tuc : "
+choice /C:0F /N /M "> [0] Go back  [F] Continue : "
 if %errorlevel%==1 exit /b
 
 echo:
-echo Dang lay danh sach ID kich hoat ho tro. Vui long cho...
+echo Fetching Supported Activation IDs list. Please wait...
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':listactids\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':listactids\:.*';. ([scriptblock]::Create($f[1]))"
 if %errorlevel%==3 (
-call :dk_color %Gray% "Khong tim thay ID kich hoat ho tro, dang huy..."
+call :dk_color %Gray% "No supported activation ID found, aborting..."
 goto :dk_done
 )
 
@@ -6250,11 +6270,11 @@ for /f "delims=" %%a in ('%psc% "$ids = Get-WmiObject -Query 'SELECT ID FROM Sof
 
 if defined _vis (
 echo:
-call :dk_color %Blue% "Tren Windows Vista va Server 2008, ban phai cai dat khoa thu cong truoc khi kich hoat."
+call :dk_color %Blue% "On Windows Vista and Server 2008, you must manually install the key before activating it."
 )
 echo:
-call :dk_color %Gray% "Nhap / Dan ID kich hoat hien thi o cot dau tien trong file text da mo, hoac nhan Enter de quay lai:"
-echo Them khoang trang sau moi ID kich hoat neu ban them nhieu:
+call :dk_color %Gray% "Enter / Paste the Activation ID shown in first column in the opened text file, or just press Enter to return:"
+echo Add space after each Activation ID if you are adding multiple:
 echo:
 set /p tsids=
 
@@ -6263,7 +6283,7 @@ if not defined tsids goto :dk_done
 
 for %%# in (%tsids%) do (
 echo "%allactids%" | find /i " %%# " %nul1% || (
-call :dk_color %Red% "[%%#] ID kich hoat nhap sai, dang huy..."
+call :dk_color %Red% "[%%#] Incorrect Activation ID entered, aborting..."
 goto :dk_done
 )
 )
@@ -6351,7 +6371,7 @@ Start-Process notepad.exe $filename
 
 if defined eval (
 echo:
-echo Dang kich hoat...
+echo Activating...
 echo:
 call :dk_act
 
@@ -6365,50 +6385,50 @@ if !gprdays! EQU 90 set actdone=1
 if !gprdays! EQU 180 set actdone=1
 
 if defined actdone (
-call :dk_color %Green% "[%winos%] da duoc dat lai va kich hoat thanh cong cho !gprdays! ngay."
+call :dk_color %Green% "[%winos%] has been reset and activated successfully for !gprdays! days."
 ) else (
 set error=1
 set showfix=1
-call :dk_color %Red% "[%winos%] Kich hoat that bai %error_code%. Thoi gian con lai: !gprdays! ngay [!gpr! phut]."
+call :dk_color %Red% "[%winos%] Activation Failed %error_code%. Remaining Period: !gprdays! days [!gpr! minutes]."
 if not defined noact (
-call :dk_color %Gray% "De kich hoat, kiem tra ket noi internet va dam bao ngay gio chinh xac."
+call :dk_color %Gray% "To activate, check your internet connection and ensure the date and time are correct."
 ) else (
-call :dk_color %Blue% "Phien ban Windows nay da biet khong the kich hoat do loi cua MS Windows/Server."
+call :dk_color %Blue% "This Windows version is known to not activate due to MS Windows/Server issues."
 )
 if not defined showfix call :dk_color %Blue% "%_fixmsg%"
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 )
 
 if defined tsids (
 echo:
-if not defined _vis if not defined oldks echo Dang cai dat du lieu khoa san pham...
+if not defined _vis if not defined oldks echo Installing Forged Product Key Data...
 if /i %tsmethod%==KMS4k (
-echo Dang ghi du lieu TrustedStore...
+echo Writing TrustedStore data...
 ) else (
-if /i %tsmethod%==StaticCID (echo Dang gui Static Confirmation ID...) else (echo Dang gui Zero Confirmation ID...)
+if /i %tsmethod%==StaticCID (echo Depositing Static Confirmation ID...) else (echo Depositing Zero Confirmation ID...)
 )
 echo:
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1])) %tsids%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1])) %tsids%"
 if !errorlevel!==3 (
 if %_actman%==0 (if not defined showfix call :dk_color %Blue% "%_fixmsg%")
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 ) else (
 if /i %tsmethod%==KMS4k if %winbuild% GEQ 26100 (
 echo:
-call :dk_color %Gray% "Trong cai dat Windows, ban co the thay thong bao gia han kich hoat, co the bo qua."
-if /i %_actmethod%==Auto call :dk_color %Gray% "De tranh thong bao nay, chay script voi ket noi internet de su dung phuong thuc StaticCID."
+call :dk_color %Gray% "In Windows settings, you may see a renewal notification for activation that can be ignored."
+if /i %_actmethod%==Auto call :dk_color %Gray% "To avoid this notification, run the script with an internet connection to use the StaticCID method."
 )
 echo "%tsids%" | find /i "7e94be23-b161-4956-a682-146ab291774c" %nul1% && (
-call :dk_color %Gray% "Windows Update nhan 1-3 nam ESU; 4-6 la khong chinh thuc nhung cho phep cai dat cap nhat Server 2008 R2 thu cong."
+call :dk_color %Gray% "Windows Update gets 1-3 years of ESU; 4-6 are unofficial but let you install Server 2008 R2 updates manually."
 )
 echo "%tsids%" | findstr /i "4afc620f-12a4-48ad-8015-2aebfbd6e47c 11be7019-a309-4763-9a09-091d1722ffe3" %nul1% && (
-call :dk_color %Gray% "ESU khong duoc ho tro chinh thuc tren Windows 8.1, nhung cap nhat co the cai thu cong den thang 1/2024."
+call :dk_color %Gray% "ESU is not officially supported on Windows 8.1, but updates can be installed manually until January 2024."
 )
 echo "%tsids%" | findstr /i "83d49986-add3-41d7-ba33-87c7bfb5c0fb 0b533b5e-08b6-44f9-b885-c2de291ba456" %nul1% && (
-call :dk_color %Gray% "Windows Update nhan 1-3 nam ESU; 4-6 la khong chinh thuc nhung co the cho cai cap nhat LTSC thu cong."
+call :dk_color %Gray% "Windows Update gets 1-3 years of ESU; 4-6 are unofficial but may let you install LTSC updates manually."
 if exist %SysPath%\ClipESUConsumer.exe (%SysPath%\ClipESUConsumer.exe -evaluateEligibility)
 if exist %SysPath%\ClipESU.exe (%SysPath%\ClipESU.exe %nul%)
 )
@@ -6417,12 +6437,12 @@ if exist %SysPath%\ClipESU.exe (%SysPath%\ClipESU.exe %nul%)
 if defined esuexistsup echo Help: %mas%tsforge#windows-esu
 
 if %_actwin%==1 for %%# in (407) do if %osSKU%==%%# (
-call :dk_color %Red% "%winos% khong ho tro kich hoat tren nen tang khong phai azure."
+call :dk_color %Red% "%winos% does not support activation on non-azure platforms."
 )
 
 if %_actoff%==1 if not defined error if defined ohub (
 echo:
-call :dk_color %Gray% "Cac ung dung Office nhu Word, Excel da kich hoat, su dung truc tiep. Bo qua nut 'Mua' trong ung dung Office dashboard."
+call :dk_color %Gray% "Office apps such as Word, Excel are activated, use them directly. Ignore 'Buy' button in Office dashboard app."
 )
 
 REM Trigger reevaluation of SPP's Scheduled Tasks
@@ -6431,7 +6451,7 @@ call :dk_reeval %nul%
 
 if not defined tsids if defined error if not defined showfix (
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 goto :dk_done
@@ -6444,14 +6464,14 @@ cls
 if not defined terminal (
 mode 100, 30
 )
-title  Go kich hoat TSforge %masver%
+title  Remove TSforge Activation %masver%
 
 echo:
-echo Kich hoat TSforge khong thay doi bat ky thanh phan Windows nao va khong cai dat file moi.
+echo TSforge activation doesn't modify any Windows components and doesn't install any new files.
 echo:
-echo Thay vao do, no them du lieu vao mot trong cac file du lieu cua Software Protection Platform.
+echo Instead, it appends data to one of data files used by Software Protection Platform.
 echo:
-call :dk_color %Gray% "Neu ban muon dat lai trang thai kich hoat,"
+call :dk_color %Gray% "If you want to reset the activation status,"
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 
@@ -6506,7 +6526,7 @@ exit /b
 :ts_process
 
 if not exist "%pkeypath%" (
-call :dk_color %Red% "Kiem tra pkeyconfig-office.xrm-ms       [Khong tim thay. Dang huy...]"
+call :dk_color %Red% "Checking pkeyconfig-office.xrm-ms       [Not found. Aborting activation...]"
 set error=1
 exit /b
 )
@@ -6522,25 +6542,25 @@ set foundprod=
 call :tsksdata chkprod %%#
 if defined _oMSI if not defined foundprod if /i %tsmethod%==KMS4k (
 set skipprocess=1
-call :dk_color %Red% "Kiem tra san pham trong script          [%%# MSI Retail khong ho tro voi KMS4k]"
+call :dk_color %Red% "Checking Product In Script              [%%# MSI Retail is not supported with KMS4k]"
 if /i %_actmethod%==Auto (
-call :dk_color %Blue% "Ket noi Internet va thu lai. Script se su dung phuong thuc kich hoat StaticCID."
+call :dk_color %Blue% "Connect to the Internet and try again. Script will use the StaticCID activation method."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat khong phai KMS4K tu menu truoc."
+call :dk_color %Blue% "Use non-KMS4K activation options from the previous menu."
 )
 )
 
 if "%_actprojvis%"=="1" (
 echo %%# | findstr /i "Project Visio" %nul% || (
 set skipprocess=1
-call :dk_color %Gray% "Bo qua vi che do Project/Visio          [%%#]"
+call :dk_color %Gray% "Skipping Because Project/Visio Mode     [%%#]"
 )
 )
 
 if "%_actprojvis%"=="0" if /i %tsmethod%==KMS4k echo %_oIds% | findstr /i "O365" %nul% && (
 echo %%# | findstr /i "Project Visio" %nul% && (
 set skipprocess=1
-echo Bo qua vi Mondo kha dung                [%%#]
+echo Skipping Because Mondo Is Available     [%%#]
 )
 )
 
@@ -6556,9 +6576,9 @@ if defined no365 (
 set _License=MondoRetail
 set _altoffid=MondoRetail
 call :ks_osppready
-echo Chuyen doi O365 Office khong ho tro      [%%# sang MondoRetail]
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 tuong duong voi O365 [phien ban 15.0] ve cac tinh nang moi nhat.")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 tuong duong voi O365 ve cac tinh nang moi nhat.")
+echo Converting Unsupported O365 Office      [%%# To MondoRetail]
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 is equivalent to O365 [15.0 version] in terms of the latest features.")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 is equivalent to O365 in terms of the latest features.")
 )
 
 if not defined _oMSI (
@@ -6566,7 +6586,7 @@ echo %%# | findstr /i "ARM" %nul% && (
 set _License=MondoRetail
 set _altoffid=MondoRetail
 call :ks_osppready
-echo Chuyen doi OEM-ARM Office khong ho tro   [%%# sang MondoRetail]
+echo Converting Unsupported OEM-ARM Office   [%%# To MondoRetail]
 )
 )
 )
@@ -6574,15 +6594,15 @@ echo Chuyen doi OEM-ARM Office khong ho tro   [%%# sang MondoRetail]
 if not defined _oMSI if /i %tsmethod%==KMS4k if not defined foundprod (
 call :tsksdata getinfo %%#
 if defined _altoffid (
-echo Chuyen doi Retail sang Volume            [%%# sang !_altoffid!]
+echo Converting Retail To Volume             [%%# To !_altoffid!]
 ) else (
 set _License=MondoVolume
 set _altoffid=MondoVolume
-echo Chuyen doi Retail sang Volume            [%%# sang !_altoffid!] [Su dung Mondo vi khong tim thay %%# trong script]
+echo Converting Retail To Volume             [%%# To !_altoffid!] [Using Mondo because %%# is not found in the script]
 )
 echo %%# | find /i "O365" %nul% && (
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 tuong duong voi O365 [phien ban 15.0] ve cac tinh nang moi nhat.")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 tuong duong voi O365 ve cac tinh nang moi nhat.")
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 is equivalent to O365 [15.0 version] in terms of the latest features.")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 is equivalent to O365 in terms of the latest features.")
 )
 call :ks_osppready
 )
@@ -6593,19 +6613,19 @@ echo !_License! | find /i "Retail" %nul% && (set keytype=zero) || (set keytype=k
 set keytype=zero
 )
 
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':offtsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':offtsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set _actid=%%a)
 )
 set "_allactid=!tsids!"
 
 if defined _actid (
-echo Kiem tra ID kich hoat                   [!_actid!] [!_License!]
+echo Checking Activation ID                  [!_actid!] [!_License!]
 ) else (
-call :dk_color %Red% "Kiem tra ID kich hoat                   [Khong tim thay Office %oVer%.0 !_License!]"
+call :dk_color %Red% "Checking Activation ID                  [Office %oVer%.0 !_License! not found]"
 set error=1
 set showfix=1
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 echo %%# | find /i "2024" %nul% && (
@@ -6625,7 +6645,7 @@ if /i not %tsmethod%==KMS4k if defined winserver if defined _config if exist "%_
 echo %_oIds% | find /i "Retail" %nul1% && (
 set scaIsNeeded=1
 reg add %_config% /v SharedComputerLicensing /t REG_SZ /d "1" /f %nul1%
-echo Them SharedComputerLicensing Reg         [Thanh cong] [Needed on Server With Retail Office]"
+echo Adding SharedComputerLicensing Reg      [Successful] [Needed on Server With Retail Office]"
 )
 )
 
@@ -6663,11 +6683,11 @@ set "pkeypath=%_common2%\Microsoft Shared\OFFICE%oVer%\Office Setup Controller\p
 call :msiofficedata %2
 
 echo:
-echo Dang xu ly Office...                    [MSI ^| %_version% ^| %_oArch%]
+echo Processing Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 exit /b
 )
 
@@ -12607,7 +12627,7 @@ set _port=
 cls
 color 07
 set KS=K%blank%MS
-title  Kich hoat Online %KS% %masver%
+title  Online %KS% Activation %masver%
 
 set _args=
 set _elev=
@@ -12642,7 +12662,7 @@ if not defined _server set _port=
 if %_unattended%==0 (
 cls
 if not defined terminal mode 76, 30
-title  Kich hoat Online %KS% %masver%
+title  Online %KS% Activation %masver%
 
 echo:
 echo:
@@ -12655,35 +12675,35 @@ call :dk_color %_Yellow% "              Old renewal task found, run activation t
 )
 echo        ______________________________________________________________
 echo: 
-echo               [1] Kich hoat - Windows
+echo               [1] Activate - Windows
 echo               [2] Activate - Office [All]
 echo               [3] Activate - Office [Project/Visio]
 echo               [4] Activate - All
 echo               _______________________________________________  
 echo: 
 if %_norentsk%==0 (
-echo               [5] Tac vu gia han voi kich hoat         [Co]
+echo               [5] Renewal Task With Activation       [Yes]
 ) else (
-call :dk_color2 %_White% "              [5] Tac vu gia han voi kich hoat        " %_Yellow% "[No]"
+call :dk_color2 %_White% "              [5] Renewal Task With Activation        " %_Yellow% "[No]"
 )
 if %_NoEditionChange%==0 (
-echo               [6] Doi phien ban neu can                 [Co]
+echo               [6] Change Edition If Needed           [Yes]
 ) else (
-call :dk_color2 %_White% "              [6] Doi phien ban neu can            " %_Yellow% "[No]"
+call :dk_color2 %_White% "              [6] Change Edition If Needed            " %_Yellow% "[No]"
 )
-echo               [7] Go cai dat Online %KS%
+echo               [7] Uninstall Online %KS%
 echo               _______________________________________________       
 echo:
 if defined _server (
-echo               [8] Dat may chu/cong %KS% [%_server%] [%_port%]
+echo               [8] Set %KS% Server/Port [%_server%] [%_port%]
 ) else (
-echo               [8] Dat may chu/cong %KS%
+echo               [8] Set %KS% Server/Port
 )
-echo               [9] Tai Office
+echo               [9] Download Office
 echo               [0] %_exitmsg%
 echo        ______________________________________________________________
 echo:
-call :dk_color2 %_White% "       " %_Green% "Chon tuy chon bang ban phim [1,2,3,4,5,6,7,8,9,0]"
+call :dk_color2 %_White% "       " %_Green% "Choose a menu option using your keyboard [1,2,3,4,5,6,7,8,9,0]"
 choice /C:1234567890 /N
 set _el=!errorlevel!
 
@@ -12710,21 +12730,21 @@ mode 115, 32
 if exist "%SysPath%\spp\store_test\" mode 135, 32
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=32;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  Kich hoat Online %KS% %masver%
+title  Online %KS% Activation %masver%
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] tep bi thieu, dang huy...
+echo [%SysPath%\%_slexe%] file is missing, aborting...
 echo:
 if not defined results (
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay DISM Restore va SFC Scan."
-call :dk_color %Blue% "Sau do, khoi dong lai he thong va thu kich hoat lai."
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run DISM Restore and SFC Scan options."
+call :dk_color %Blue% "After that, restart system and try activation again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu van gap loi nay, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If it still shows the same error, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -12763,16 +12783,16 @@ if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo Kiem tra ket noi Internet               [Da ket noi%ping_f%]
+echo Checking Internet Connection            [Connected%ping_f%]
 ) else (
 set error=1
-call :dk_color %Red% "Kiem tra ket noi Internet               [Khong ket noi]"
-call :dk_color %Blue% "Can ket noi Internet de kich hoat Online %KS%."
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Internet is required for Online %KS% Activation."
 )
 
 ::========================================================================================================================================
 
-echo Dang bat dau kiem tra chan doan...
+echo Initiating Diagnostic Tests...
 
 set "_serv=%_slser% Winmgmt"
 
@@ -12793,10 +12813,10 @@ if not %_actwin%==1 goto :ks_office
 ::  Check if system is permanently activated or not
 
 echo:
-echo Dang xu ly Windows...
+echo Processing Windows...
 call :dk_checkperm
 if defined _perm (
-call :dk_color %Gray% "Kiem tra kich hoat OS                   [Windows da duoc kich hoat vinh vien]"
+call :dk_color %Gray% "Checking OS Activation                  [Windows is already permanently activated]"
 goto :ks_office
 )
 
@@ -12811,14 +12831,14 @@ if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*EvalCorEditio
 
 if defined _eval (
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID %nul2% | find /i "Eval" %nul1% && (
-call :dk_color %Red% "Kiem tra phien ban danh gia             [Phien ban danh gia khong the kich hoat ngoai thoi gian danh gia.]"
+call :dk_color %Red% "Checking Evaluation Edition             [Evaluation editions cannot be activated outside of evaluation period.]"
 
 if defined _evalserv (
-call :dk_color %Blue% "Quay lai menu chinh va su dung tuy chon [Doi phien ban]."
+call :dk_color %Blue% "Go back to main menu and use [Change Edition] option."
 ) else (
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge de dat lai thoi gian danh gia."
+call :dk_color %Blue% "Use TSforge activation option from the main menu to reset evaluation period."
 set fixes=%fixes% %mas%evaluation_editions
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%evaluation_editions"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%evaluation_editions"
 )
 
 goto :ks_office
@@ -12850,12 +12870,12 @@ set /a UBR=0
 if %osSKU%==191 if defined altkey if defined altedition (
 for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v UBR %nul6%') do if not errorlevel 1 set /a UBR=%%b
 if %winbuild% LSS 22598 if !UBR! LSS 2788 (
-call :dk_color %Blue% "Windows can cap nhat len build 19044.2788 hoac cao hon de kich hoat IotEnterpriseS %KS%."
+call :dk_color %Blue% "Windows must be updated to build 19044.2788 or higher for IotEnterpriseS %KS% activation."
 )
 )
 
 if not defined key if defined notfoundaltactID (
-call :dk_color %Red% "Kiem tra phien ban thay the cho %KS%    [%altedition% Khong tim thay ID kich hoat]"
+call :dk_color %Red% "Checking Alternate Edition For %KS%      [%altedition% Activation ID Not Found]"
 )
 
 if not defined key if not defined _gvlk (
@@ -12868,20 +12888,20 @@ if %winbuild% LSS 7600 if exist "%SysPath%\licensing\skus\Security-Licensing-SLC
 if %winbuild% LSS 7600 if exist "%SysPath%\licensing\skus\Security-Licensing-SLC-Component-SKU-%osedition%\*VL-BYPASS*.xrm-ms" set sppks=1
 
 if defined skunotfound (
-call :dk_color %Red% "Khong tim thay file ban quyen can thiet."
+call :dk_color %Red% "Required license files not found."
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 if defined sppks (
-call :dk_color %Red% "Kich hoat %KS% duoc ho tro nhung khong tim thay khoa %KS%."
+call :dk_color %Red% "%KS% activation is supported but failed to find the %KS% key."
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 if not defined skunotfound if not defined sppks (
-call :dk_color %Red% "San pham nay khong ho tro kich hoat %KS%."
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge tu menu chinh."
+call :dk_color %Red% "This product does not support %KS% activation."
+call :dk_color %Blue% "Use TSforge activation option from the main menu."
 )
 echo:
 goto :ks_office
@@ -12892,12 +12912,12 @@ goto :ks_office
 ::  Install key
 
 if defined changekey (
-call :dk_color %Blue% "Khoa san pham phien ban [%altedition%] se duoc su dung de kich hoat %KS%."
+call :dk_color %Blue% "[%altedition%] edition product key will be used to enable %KS% activation."
 echo:
 )
 
 if defined winsub (
-call :dk_color %Blue% "Phat hien Windows Subscription [SKU ID-%slcSKU%]. Script se kich hoat phien ban goc [SKU ID-%regSKU%]."
+call :dk_color %Blue% "Windows Subscription [SKU ID-%slcSKU%] found. Script will activate base edition [SKU ID-%regSKU%]."
 echo:
 )
 
@@ -12905,7 +12925,7 @@ set _partial=
 if not defined key (
 if %_wmic% EQU 1 for /f "tokens=2 delims==" %%# in ('wmic path %spp% where "ApplicationID='55c92734-d682-4d71-983e-d6ec3f16059f' and PartialProductKey<>null AND LicenseDependsOn is NULL" Get PartialProductKey /value %nul6%') do set "_partial=%%#"
 if %_wmic% EQU 0 for /f "tokens=2 delims==" %%# in ('%psc% "(([WMISEARCHER]'SELECT PartialProductKey FROM %spp% WHERE ApplicationID=''55c92734-d682-4d71-983e-d6ec3f16059f'' AND PartialProductKey IS NOT NULL AND LicenseDependsOn is NULL').Get()).PartialProductKey | %% {echo ('PartialProductKey='+$_)}" %nul6%') do set "_partial=%%#"
-call echo Kiem tra khoa san pham da cai dat       [Khoa 1 phan - %%_partial%%] [Volume:GVLK]
+call echo Checking Installed Product Key          [Partial Key - %%_partial%%] [Volume:GVLK]
 )
 
 if defined key (
@@ -12940,7 +12960,7 @@ if exist "%%~A\Microsoft %%~G\root\vfs\%%#\sppc*dll" set ohook=1
 
 if defined ohook (
 echo:
-call :dk_color %Gray% "Kiem tra Ohook                          [Ohook da duoc cai dat cho Office]"
+call :dk_color %Gray% "Checking Ohook                          [Ohook activation is already installed for Office]"
 )
 
 ::  Check unsupported office versions
@@ -12953,7 +12973,7 @@ set _86=HKLM\SOFTWARE\Wow6432Node\Microsoft\Office
 
 if not "%o14c2r%"=="" (
 echo:
-call :dk_color %Red% "Kiem tra cai dat Office khong ho tro    [ %o14c2r%]"
+call :dk_color %Red% "Checking Unsupported Office Install     [ %o14c2r%]"
 )
 
 if %winbuild% GEQ 10240 %psc% "Get-AppxPackage -name "Microsoft.MicrosoftOfficeHub"" | find /i "Office" %nul1% && (
@@ -12978,7 +12998,7 @@ set error1=%errorlevel%
 
 if defined o16c2r if %error1% EQU 1060 (
 echo:
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 16.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 16.0 files found]"
 set o16c2r=
 set error=1
 )
@@ -12988,7 +13008,7 @@ set error2=%errorlevel%
 
 if defined o15c2r if %error1% EQU 1060 if %error2% EQU 1060 (
 echo:
-call :dk_color %Red% "Kiem tra dich vu ClickToRun             [Khong tim thay, tim thay file Office 15.0]"
+call :dk_color %Red% "Checking ClickToRun Service             [Not found, Office 15.0 files found]"
 set o15c2r=
 set error=1
 )
@@ -12997,16 +13017,16 @@ if "%o16uwp%%o16c2r%%o15c2r%%o16msi%%o15msi%%o14msi%"=="" (
 set error=1
 echo:
 if not "%o14c2r%"=="" (
-call :dk_color %Red% "Kiem tra cai dat Office ho tro          [Khong tim thay]"
+call :dk_color %Red% "Checking Supported Office Install       [Not Found]"
 ) else (
-call :dk_color %Red% "Kiem tra Office da cai dat              [Khong tim thay]"
+call :dk_color %Red% "Checking Installed Office               [Not Found]"
 )
 
 if defined ohub (
 echo:
-echo Ban chi cai dat ung dung Office Dashboard; can cai dat phien ban day du cua Office.
+echo You only have the Office Dashboard app installed; you need to install the full version of Office.
 )
-call :dk_color %Blue% "Tai va cai dat Office tu link ben duoi, sau do thu lai."
+call :dk_color %Blue% "Download and install Office from the URL below, then try again."
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto :ks_activate
@@ -13018,7 +13038,7 @@ if not "%o14c2r%"=="" set multioffice=1
 
 if defined multioffice (
 echo:
-call :dk_color %Gray% "Kiem tra cai dat nhieu Office           [Tim thay. Nen chi cai mot phien ban]"
+call :dk_color %Gray% "Checking Multiple Office Install        [Found. Recommended to install one version only]"
 )
 
 ::========================================================================================================================================
@@ -13049,10 +13069,10 @@ if not defined _lat set "_oIds= !_oIds! %%#ProRetail "
 set uwpinfo=%o16uwp_path:C:\Program Files\WindowsApps\Microsoft.Office.Desktop_=%
 
 echo:
-echo Dang xu ly Office...                    [UWP ^| %uwpinfo%]
+echo Processing Office...                    [UWP ^| %uwpinfo%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ks_starto15c2r
 )
@@ -13088,10 +13108,10 @@ set "_oLPath=%_oRoot%\Licenses"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo Dang xu ly Office...                    [C2R ^| %_version% ^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ks_starto16c2r
 )
@@ -13129,10 +13149,10 @@ set "_oLPath=%_oRoot%\Licenses16"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo Dang xu ly Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 set error=1
 goto :ks_startmsi
 )
@@ -13168,23 +13188,23 @@ call :oh_licrefresh
 if %winbuild% GEQ 9600 (
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" /v NoGenTicket /t REG_DWORD /d 1 /f %nul%
 if %winbuild% EQU 14393 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" /v NoAcquireGT /t REG_DWORD /d 1 /f %nul%
-echo Tat xac thuc %KS% AVS                    [Thanh cong]
+echo Turn off %KS% AVS Validation             [Successful]
 )
 
 set "slp=SoftwareLicensingProduct"
 set "ospp=OfficeSoftwareProtectionProduct"
 
 echo:
-echo Dang kich hoat san pham Volume...
+echo Activating Volume Products...
 if %_actwin%==1 call :_taskgetids sppwid %slp% windows
 if %_actoff%==1 call :_taskgetids sppoid %slp% office
 if %_actoff%==1 call :_taskgetids osppid %ospp% office
 
 if not defined sppwid if not defined sppoid if not defined osppid (
 if not defined keyerror (
-echo Khong tim thay san pham Volume Windows / Office da cai dat.
+echo No installed Volume Windows / Office products found.
 ) else (
-call :dk_color %Red% "Khong the lay danh sach san pham Volume Windows / Office da cai dat."
+call :dk_color %Red% "Failed to get installed Volume Windows / Office products."
 )
 call :_taskgetserv
 call :_taskregserv
@@ -13210,8 +13230,8 @@ if defined oemerr if not defined sppoid if not defined osppid (set _deltask=1)
 if not defined _deltask (
 call :ks_renewal
 ) else (
-if exist "%ProgramFiles%\Activation-Renewal\Activation_task.cmd" call :dk_color %Gray% "Dang xoa tac vu gia han kich hoat..."
-call :dk_color %Gray% "Bo qua viec tao tac vu gia han kich hoat..."
+if exist "%ProgramFiles%\Activation-Renewal\Activation_task.cmd" call :dk_color %Gray% "Deleting activation renewal task..."
+call :dk_color %Gray% "Skipping creation of activation renewal task..."
 call :ks_clearstuff %nul%
 if not defined _server (
 if %winbuild% GEQ 9200 (
@@ -13221,12 +13241,12 @@ if defined _C16R (
 REM  mass{}grave{dot}dev/office-license-is-not-genuine
 set _server=10.0.0.10
 call :_taskregserv
-echo Giu dia chi IP khong ton tai 10.0.0.10 lam may chu %KS%.
+echo Keeping the non-existent IP address 10.0.0.10 as %KS% Server.
 )
 )
 if not defined _C16R (
 call :_taskclear-cache
-echo Da xoa may chu %KS% tu registry.
+echo Cleared %KS% Server from the registry.
 )
 )
 )
@@ -13234,12 +13254,12 @@ echo Da xoa may chu %KS% tu registry.
 ::  https://learn.microsoft.com/en-us/azure/virtual-desktop/windows-10-multisession-faq
 
 if %_actwin%==1 for %%# in (407) do if %osSKU%==%%# (
-call :dk_color %Red% "%winos% khong ho tro kich hoat tren nen tang khong phai azure."
+call :dk_color %Red% "%winos% does not support activation on non-azure platforms."
 )
 
 if %_actoff%==1 if defined sppoid if not defined _tserror if %_NoEditionChange%==0 if defined ohub (
 echo:
-call :dk_color %Gray% "Cac ung dung Office nhu Word, Excel da kich hoat, su dung truc tiep. Bo qua nut 'Mua' trong ung dung Office dashboard."
+call :dk_color %Gray% "Office apps such as Word, Excel are activated, use them directly. Ignore 'Buy' button in Office dashboard app."
 )
 
 ::  Trigger reevaluation of SPP's Scheduled Tasks
@@ -13254,14 +13274,14 @@ goto :dk_done
 cls
 set _server=
 echo:
-echo Nhap / Dan dia chi may chu %KS%, hoac nhan Enter de quay lai:
+echo Enter / Paste the %KS% Server address, or just press Enter to return:
 echo:
 set /p _server=
 if not defined _server goto :ks_menu
 set "_server=%_server: =%"
 
 echo:
-echo Nhap / Dan dia chi cong %KS%, hoac nhan Enter de dung mac dinh:
+echo Enter / Paste the %KS% Port address, or just press Enter to use default:
 echo:
 set /p _port=
 if not defined _port goto :ks_menu
@@ -13349,7 +13369,7 @@ set foundprod=
 call :ksdata chkprod %%#
 if not defined foundprod (
 set skipprocess=1
-call :dk_color %Gray% "Bo qua vi che do NoEditionChange        [%%#]"
+call :dk_color %Gray% "Skipping Because NoEditionChange Mode   [%%#]"
 )
 )
 
@@ -13357,14 +13377,14 @@ call :dk_color %Gray% "Bo qua vi che do NoEditionChange        [%%#]"
 if "%_actprojvis%"=="1" if not defined skipprocess (
 echo %%# | findstr /i "Project Visio" %nul% || (
 set skipprocess=1
-call :dk_color %Gray% "Bo qua vi che do Project/Visio          [%%#]"
+call :dk_color %Gray% "Skipping Because Project/Visio Mode     [%%#]"
 )
 )
 
 if "%_actprojvis%"=="0" if not defined skipprocess echo %_oIds% | findstr /i "O365" %nul% && (
 echo %%# | findstr /i "Project Visio" %nul% && (
 set skipprocess=1
-echo Bo qua vi Mondo kha dung                [%%#]
+echo Skipping Because Mondo Is Available     [%%#]
 )
 )
 
@@ -13384,10 +13404,10 @@ call :ksdata getinfo !_prod!
 
 if defined _altoffid (
 set _License=!_altoffid!
-echo Chuyen doi Retail sang Volume            [!_prod! sang !_altoffid!]
+echo Converting Retail To Volume             [!_prod! To !_altoffid!]
 echo %%# | find /i "O365" %nul% && (
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 tuong duong voi O365 [phien ban 15.0] ve cac tinh nang moi nhat.")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 tuong duong voi O365 ve cac tinh nang moi nhat.")
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 is equivalent to O365 [15.0 version] in terms of the latest features.")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 is equivalent to O365 in terms of the latest features.")
 )
 set _prod=!_altoffid!
 call :ks_osppready
@@ -13400,11 +13420,11 @@ call :dk_inskey "[!key!] [!_prod!]"
 ) else (
 if not defined _oMSI (
 set error=1
-call :dk_color %Red% "Kiem tra san pham trong script          [Khong tim thay Office %oVer%.0 !_prod! trong script]"
-call :dk_color %Blue% "Dam bao ban dang su dung MAS phien ban moi nhat."
+call :dk_color %Red% "Checking Product In Script              [Office %oVer%.0 !_prod! not found in script]"
+call :dk_color %Blue% "Make sure you are using Latest MAS script."
 ) else (
-call :dk_color %Red% "Kiem tra san pham trong script          [!_prod! MSI Retail khong duoc ho tro]"
-call :dk_color %Blue% "Su dung tuy chon Ohook de kich hoat. De kich hoat voi %KS%, ban can cai dat phien ban Volume cua Office."
+call :dk_color %Red% "Checking Product In Script              [!_prod! MSI Retail is not supported]"
+call :dk_color %Blue% "Use Ohook option to activate it. To activate with %KS%, you need to install Volume version of Office."
 )
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
@@ -13441,11 +13461,11 @@ if "%osarch%"=="x86" set _oArch=x86
 call :msiofficedata %2
 
 echo:
-echo Dang xu ly Office...                    [MSI ^| %_version% ^| %_oArch%]
+echo Processing Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "Kiem tra san pham da cai dat            [Khong tim thay Product ID. Dang huy...]"
+call :dk_color %Red% "Checking Installed Products             [Product IDs not found. Aborting activation...]"
 exit /b
 )
 
@@ -13458,7 +13478,7 @@ exit /b
 
 cls
 if not defined terminal mode 91, 30
-title  Go cai dat hoan toan Online %KS% %masver%
+title  Online %KS% Complete Uninstall %masver%
 
 set "uline=__________________________________________________________________________________________"
 
@@ -13467,10 +13487,10 @@ for /f "skip=2 tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\Cli
 for /f "skip=2 tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath /reg:32" 2^>nul') do if exist "%%b\root\Licenses16\ProPlus*.xrm-ms" set "_C16R=1"
 if %winbuild% GEQ 9200 if defined _C16R (
 echo:
-call :dk_color %Gray% "Luu y-"
+call :dk_color %Gray% "Notice-"
 echo:
-echo De dam bao cac ung dung Office khong hien thong bao khong chinh hang,
-echo vui long chay tuy chon kich hoat mot lan, va khong go cai dat sau do.
+echo To make sure Office programs do not show a non-genuine banner,
+echo please run the activation option once, and don't uninstall afterward.
 echo %uline%
 )
 
@@ -13483,27 +13503,27 @@ call :ks_clearstuff
 
 %nul% reg query "HKLM\%SPPk%\%_wApp%" && (
 set error_=9
-echo Khong the xoa hoan toan bo nho dem %KS%.
-reg query "HKLM\%SPPk%\%_wApp%" /s %nul2% | findstr /i "127.0.0.2" %nul1% && echo Kich hoat KMS38 da bi khoa.
+echo Failed to completely clear %KS% Cache.
+reg query "HKLM\%SPPk%\%_wApp%" /s %nul2% | findstr /i "127.0.0.2" %nul1% && echo KMS38 activation is locked.
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 ) || (
-echo Da xoa bo nho dem %KS% thanh cong.
+echo Cleared %KS% Cache successfully.
 )
 
 if defined error_ (
 if "%error_%"=="1" (
 echo %uline%
 %eline%
-echo Thu lai / Khoi dong lai he thong
+echo Try Again / Restart the System
 echo %uline%
 )
 ) else (
 echo %uline%
 echo:
-call :dk_color %Green% "Da go cai dat thanh cong Online %KS%."
+call :dk_color %Green% "Online %KS% has been successfully uninstalled."
 echo:
-call :dk_color %Gray% "Neu ban muon dat lai trang thai kich hoat,"
+call :dk_color %Gray% "If you want to reset the activation status,"
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 echo %uline%
@@ -13516,17 +13536,17 @@ goto :dk_done
 set "key=HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\taskcache\tasks"
 
 reg query "%key%" /f Path /s | find /i "\Activation-Renewal" %nul1% && (
-echo Dang xoa [Task] Activation-Renewal
+echo Deleting [Task] Activation-Renewal
 schtasks /delete /tn Activation-Renewal /f %nul%
 )
 
 reg query "%key%" /f Path /s | find /i "\Activation-Run_Once" %nul1% && (
-echo Dang xoa [Task] Activation-Run_Once
+echo Deleting [Task] Activation-Run_Once
 schtasks /delete /tn Activation-Run_Once /f %nul%
 )
 
 If exist "%ProgramFiles%\Activation-Renewal\" (
-echo Dang xoa [Thu muc] %ProgramFiles%\Activation-Renewal\
+echo Deleting [Folder] %ProgramFiles%\Activation-Renewal\
 rmdir /s /q "%ProgramFiles%\Activation-Renewal\" %nul%
 )
 
@@ -13571,9 +13591,9 @@ if not "%~1"=="Task" (
 echo:
 echo ====== Error ======
 echo:
-echo File nay chi duoc chay boi tac vu da len lich.
+echo This file is supposed to be run only by the scheduled task.
 echo:
-echo Nhan phim bat ky de thoat
+echo Press any key to exit
 pause >nul
 exit /b
 )
@@ -13658,8 +13678,8 @@ goto _taskend
 )
 
 echo:
-echo Loi: Khong co ket noi Internet
-echo Cho 30 giay
+echo Error: Internet is not connected
+echo Waiting 30 seconds
 
 timeout /t 30 >nul
 set /a loop=%loop%+1
@@ -13685,7 +13705,7 @@ if %_wmic% EQU 1 wmic path Win32_ComputerSystem get CreationClassName /value 2>n
 if %_wmic% EQU 0 %psc% "Get-CIMInstance -Class Win32_ComputerSystem | Select-Object -Property CreationClassName" 2>nul | find /i "computersystem" 1>nul
 if !errorlevel! NEQ 0 (set e_wmispp=WMI, SPP) else (set e_wmispp=SPP)
 echo:
-echo Loi: Khong phan hoi - !e_wmispp!
+echo Error: Not Respoding- !e_wmispp!
 echo:
 )
 
@@ -13700,13 +13720,13 @@ call :_taskgetids osppid %ospp% office
 ::========================================================================================================================================
 
 echo:
-echo Dang gia han kich hoat K-M-S cho tat ca san pham Volume da cai dat
+echo Renewing K-M-S activation for all installed Volume products
 
 if not defined sppwid if not defined sppoid if not defined osppid (
 echo:
-echo Khong tim thay san pham Volume Windows / Office da cai dat
+echo No installed Volume Windows / Office product found
 echo:
-echo Dang gia han may chu K-M-S
+echo Renewing K-M-S server
 call :_taskgetserv
 call :_taskregserv
 goto :_skipact
@@ -13722,7 +13742,7 @@ call :_taskact
 
 if defined run_once (
 echo:
-echo Dang xoa tac vu da len lich Activation-Run_Once
+echo Deleting Scheduled Task Activation-Run_Once
 schtasks /delete /tn Activation-Run_Once /f %nul%
 )
 
@@ -13731,7 +13751,7 @@ schtasks /delete /tn Activation-Run_Once /f %nul%
 :_taskend
 
 echo:
-echo Dang thoat
+echo Exiting
 echo ______________________________________________________________________
 
 if defined _tserror (exit /b 123456789) else (exit /b 0)
@@ -13801,7 +13821,7 @@ if "%1"=="act_win" if not defined t_name (set prodname=%winos%)
 
 if "%1"=="act_win" if %_kms38% EQU 1 (
 if defined t_name (
-echo %prodname% da duoc kich hoat bang KMS38.
+echo %prodname% is already activated with KMS38.
 ) else (
 call :dk_color %Green% "%prodname% is already activated with KMS38."
 )
@@ -13810,7 +13830,7 @@ exit /b
 
 if %errorcode% EQU 12345 (
 if defined t_name (
-echo %prodname% kich hoat that bai do khong co hoac bi han che Internet.
+echo %prodname% activation failed due to restricted or no Internet.
 ) else (
 call :dk_color %Red% "%prodname% activation failed due to restricted or no Internet."
 )
@@ -13821,10 +13841,10 @@ exit /b
 
 if %errorcode% EQU -1073418187 if "%1"=="act_win" if %winbuild% LSS 9200 (
 if defined t_name (
-echo %prodname% khong the kich hoat KMS tren may tinh nay do BIOS OEM khong du dieu kien [0xC004F035].
+echo %prodname% cannot be KMS-activated on this computer due to unqualified OEM BIOS [0xC004F035].
 ) else (
 call :dk_color %Red% "%prodname% cannot be KMS-activated on this computer due to unqualified OEM BIOS [0xC004F035]."
-call :dk_color %Blue% "Su dung tuy chon kich hoat TSforge tu menu chinh."
+call :dk_color %Blue% "Use TSforge activation option from the main menu."
 )
 set oemerr=1
 set showfix=1
@@ -13833,12 +13853,12 @@ exit /b
 
 if %errorcode% EQU -1073418124 (
 if defined t_name (
-echo %prodname% kich hoat that bai do loi Internet [0xC004F074].
+echo %prodname% activation failed due to Internet issue [0xC004F074].
 ) else (
 call :dk_color %Red% "%prodname% activation failed due to Internet issue [0xC004F074]."
 if not defined _tserror (
-call :dk_color %Blue% "Dam bao cac file he thong khong bi tuong lua chan."
-call :dk_color %Blue% "Neu van gap loi, thu ket noi Internet khac hoac VPN nhu https://1.1.1.1"
+call :dk_color %Blue% "Make sure that system files are not blocked by firewall."
+call :dk_color %Blue% "If the issue persists, try another Internet connection or VPN such as https://1.1.1.1"
 )
 )
 set showfix=1
@@ -13854,9 +13874,9 @@ set /a "gpr2=(%gpr%+1440-1)/1440"
 
 if %errorcode% EQU 0 if %gpr% EQU 0 (
 if defined t_name (
-echo %prodname% kich hoat thanh cong, nhung thoi gian con lai khong tang.
+echo %prodname% activation succeeded, but Remaining Period failed to increase.
 ) else (
-call :dk_color %Red% "%prodname% kich hoat thanh cong, nhung thoi gian con lai khong tang."
+call :dk_color %Red% "%prodname% activation succeeded, but Remaining Period failed to increase."
 )
 set _tserror=1
 exit /b
@@ -13870,18 +13890,18 @@ if %gpr% EQU 259200 set _actpass=0
 
 if %errorcode% EQU 0 if %_actpass% EQU 0 (
 if defined t_name (
-echo %prodname% da kich hoat thanh cong trong %gpr2% ngay.
+echo %prodname% is successfully activated for %gpr2% days.
 ) else (
-call :dk_color %Green% "%prodname% da kich hoat thanh cong trong %gpr2% ngay."
+call :dk_color %Green% "%prodname% is successfully activated for %gpr2% days."
 )
 exit /b
 )
 
 cmd /c exit /b %errorcode%
 if defined t_name (
-echo %prodname% kich hoat that bai [0x!=ExitCode!]. Thoi gian con lai: %gpr2% ngay [%gpr% phut].
+echo %prodname% has failed to activate [0x!=ExitCode!]. Remaining Period: %gpr2% days [%gpr% minutes].
 ) else (
-call :dk_color %Red% "%prodname% kich hoat that bai [0x!=ExitCode!]. Thoi gian con lai: %gpr2% ngay [%gpr% phut]."
+call :dk_color %Red% "%prodname% has failed to activate [0x!=ExitCode!]. Remaining Period: %gpr2% days [%gpr% minutes]."
 )
 set _tserror=1
 exit /b
@@ -13919,7 +13939,7 @@ set _actid=%sppwid%
 call :_act act_win
 call :_actinfo act_win
 ) else (
-if defined t_name echo Kiem tra: Phien ban Volume cua Windows chua duoc cai dat
+if defined t_name echo Checking: Volume version of Windows is not installed
 )
 
 if defined sppoid (
@@ -13942,7 +13962,7 @@ if not defined _taskskip call :_actinfo
 
 if not defined sppoid if not defined osppid if defined t_name (
 echo:
-echo Kiem tra: Phien ban Volume cua Office chua duoc cai dat
+echo Checking: Volume version of Office is not installed
 )
 
 exit /b
@@ -14096,7 +14116,7 @@ call :ks_clearstuff %nul%
 
 if defined error_ (
 set error=1
-call :dk_color %Red% "Khong the go tac vu gia han cu. Khoi dong lai / Thu lai."
+call :dk_color %Red% "Failed to remove previous Renewal Task. Restart system / Try again."
 exit /b
 )
 
@@ -14115,7 +14135,7 @@ if not defined _int (s%nil%cht%nil%asks /cre%nil%ate /tn "Activation-Run_Once" /
 if exist "%_temp%\.*" rmdir /s /q "%_temp%\" %nul%
 
 call :ks_createInfo.txt
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split \":_extracttask\:.*`r`n\"; [io.file]::WriteAllText('%_dest%\Activation_task.cmd', '@::%randguid%' + [Environment]::NewLine + $f[1].Trim(), [System.Text.Encoding]::ASCII)"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split \":_extracttask\:.*`r`n\"; [io.file]::WriteAllText('%_dest%\Activation_task.cmd', '@::%randguid%' + [Environment]::NewLine + $f[1].Trim(), [System.Text.Encoding]::ASCII)"
 
 ::========================================================================================================================================
 
@@ -14130,22 +14150,22 @@ schtasks /delete /tn Activation-Renewal /f %nul%
 schtasks /delete /tn Activation-Run_Once /f %nul%
 rmdir /s /q "%_dest%\" %nul%
 set error=1
-call :dk_color %Red% "Khong the cai dat tac vu gia han. Khoi dong lai / Thu lai."
+call :dk_color %Red% "Failed to install Renewal Task. Restart system / Try again."
 exit /b
 )
 
 if "%keyerror%"=="0" if not defined _tserror (
-call :dk_color %Green% "Tac vu gia han kich hoat vinh vien da duoc cai dat thanh cong trong %_dest%"
+call :dk_color %Green% "Renewal Task for lifetime activation is successfully installed in %_dest%"
 exit /b
 )
-echo Tac vu gia han kich hoat vinh vien da duoc cai dat thanh cong trong %_dest%
+echo Renewal Task for lifetime activation is successfully installed in %_dest%
 exit /b
 
 ::  Extract the text from batch script without character and file encoding issue
 
 :ks_RenExport
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split \":%~1\:.*`r`n\"; [io.file]::WriteAllText('%~2',$f[1].Trim(),[System.Text.Encoding]::%~3);"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split \":%~1\:.*`r`n\"; [io.file]::WriteAllText('%~2',$f[1].Trim(),[System.Text.Encoding]::%~3);"
 exit /b
 
 ::========================================================================================================================================
@@ -14153,22 +14173,22 @@ exit /b
 :ks_createInfo.txt
 
 (
-echo   Script nay duoc su dung de gia han ban quyen Windows/Office bang online K-M-S.
+echo   The use of this script is to renew your Windows/Office license using online K-M-S.
 echo:
-echo   Neu tac vu gia han/kich hoat da duoc tao thi se ton tai nhung thu sau,
+echo   If renewal/activation Scheduled tasks were created then following would exist,
 echo:
-echo   - Tac vu da len lich
-echo     Activation-Renewal    [Gia han / Hang tuan]
-echo     Activation-Run_Once   [Tac vu kich hoat - tu xoa sau khi kich hoat]
-echo     Cac tac vu chi chay khi he thong co ket noi Internet.
+echo   - Scheduled tasks
+echo     Activation-Renewal    [Renewal / Weekly]
+echo     Activation-Run_Once   [Activation Task - deletes itself once activated]
+echo     The scheduled tasks runs only if the system is connected to the Internet.
 echo:
-echo   - Cac file
+echo   - Files
 echo     C:\Program Files\Activation-Renewal\Activation_task.cmd
 echo     C:\Program Files\Activation-Renewal\Info.txt
 echo     C:\Program Files\Activation-Renewal\Logs.txt
 echo ______________________________________________________________________________________________
 echo:
-echo   Script nay la mot phan cua du an MAS.
+echo   This Script is a part of MAS project.
 echo:   
 echo   Homepage: mass%w%grave%w%.dev
 )>"%_dest%\Info.txt"
@@ -14993,7 +15013,7 @@ mode 100, 36
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=35;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':sppmgr\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':sppmgr\:.*';. ([scriptblock]::Create($f[1]))"
 goto dk_done
 
 :sppmgr:
@@ -16541,7 +16561,7 @@ set "line=______________________________________________________________________
 :at_menu
 
 cls
-title  Xu ly su co %masver%
+title  Troubleshoot %masver%
 if not defined terminal mode 77, 30
 
 echo:
@@ -16556,15 +16576,15 @@ echo:
 echo:             [2] Dism RestoreHealth
 echo:             [3] SFC Scannow
 echo:                                                                      
-echo:             [4] Sua WMI
-echo:             [5] Sua loi ban quyen
-echo:             [6] Sua WPA Registry
+echo:             [4] Fix WMI
+echo:             [5] Fix Licensing
+echo:             [6] Fix WPA Registry
 echo:             ___________________________________________________
 echo:
 echo:             [0] %_exitmsg%
 echo:       _______________________________________________________________
 echo:          
-call :dk_color2 %_White% "            " %_Green% "Chon tuy chon bang ban phim :"
+call :dk_color2 %_White% "            " %_Green% "Choose a menu option using your keyboard :"
 choice /C:1234560 /N
 set _erl=%errorlevel%
 
@@ -16587,8 +16607,8 @@ title  Dism /English /Online /Cleanup-Image /RestoreHealth
 
 if %winbuild% LSS 9200 (
 %eline%
-echo Phat hien phien ban OS khong ho tro.
-echo Lenh nay chi hoat dong tren Windows 8/8.1/10/11 va cac phien ban Server tuong ung.
+echo Unsupported OS version detected.
+echo This command only works on Windows 8/8.1/10/11 and their Server equivalents.
 goto :at_back
 )
 
@@ -16599,25 +16619,25 @@ for /f "delims=[] tokens=2" %%# in ('ping -n 1 %%a') do (if not "%%#"=="" set _i
 
 echo:
 if defined _int (
-echo      Kiem tra ket noi Internet      [Da ket noi]
+echo      Checking Internet Connection  [Connected]
 ) else (
-call :dk_color2 %_White% "     " %Red% "Kiem tra ket noi Internet      [Khong ket noi]"
+call :dk_color2 %_White% "     " %Red% "Checking Internet Connection  [Not connected]"
 )
 
 echo %line%
 echo:
-echo      DISM su dung Windows Update de cung cap cac file thay the can thiet de sua loi.
-echo      Qua trinh nay se mat 5-15 phut hoac hon..
+echo      DISM uses Windows Update to provide replacement files required to fix corruption.
+echo      This will take 5-15 minutes or more..
 echo %line%
 echo:
-echo      Luu y:
+echo      Notes:
 echo:
-call :dk_color2 %_White% "     - " %Gray% "Dam bao da ket noi Internet."
-call :dk_color2 %_White% "     - " %Gray% "Dam bao Windows Update dang hoat dong binh thuong."
+call :dk_color2 %_White% "     - " %Gray% "Make sure the internet is connected."
+call :dk_color2 %_White% "     - " %Gray% "Make sure that Windows update is properly working."
 echo:
 echo %line%
 echo:
-choice /C:09 /N /M ">    [9] Tiep tuc [0] Quay lai : "
+choice /C:09 /N /M ">    [9] Continue [0] Go back : "
 if %errorlevel%==1 goto at_menu
 
 cls
@@ -16633,7 +16653,7 @@ del /f /q "%SystemRoot%\logs\cbs\cbs.log" %nul%
 del /f /q "%SystemRoot%\logs\DISM\dism.log" %nul%
 
 echo:
-echo Dang ap dung lenh...
+echo Applying the command...
 echo dism /english /online /cleanup-image /restorehealth
 dism /english /online /cleanup-image /restorehealth
 
@@ -16654,7 +16674,7 @@ copy /y /b "%SystemRoot%\logs\DISM\dism.log" "!desktop!\AT_Logs\RHealth_DISM_%_t
 )
 
 echo:
-call :dk_color %Gray% "Log CBS va DISM da duoc sao chep vao thu muc AT_Logs tren desktop."
+call :dk_color %Gray% "CBS and DISM logs are copied to the AT_Logs folder on your desktop."
 goto :at_back
 
 ::========================================================================================================================================
@@ -16668,17 +16688,17 @@ title  sfc /scannow
 echo:
 echo %line%
 echo:    
-echo      SFC se sua chua cac file he thong bi thieu hoac loi.
-echo      Khuyen nghi chay DISM truoc khi chay tuy chon nay.
-echo      Qua trinh nay se mat 10-15 phut hoac hon..
+echo      SFC will repair missing or corrupted system files.
+echo      It is recommended you run the DISM option first before this one.
+echo      This will take 10-15 minutes or more..
 echo:
-echo      Neu SFC khong sua duoc, chay lai lenh de kiem tra xem co the 
-echo      sua duoc lan sau khong. Doi khi can chay lenh sfc /scannow 3 lan
-echo      khoi dong lai PC sau moi lan de sua het nhung gi co the.'s able to.
+echo      If SFC could not fix something, then run the command again to see if it may be able 
+echo      to the next time. Sometimes it may take running the sfc /scannow command 3 times
+echo      restarting the PC after each time to completely fix everything that it's able to.
 echo:   
 echo %line%
 echo:
-choice /C:09 /N /M ">    [9] Tiep tuc [0] Quay lai : "
+choice /C:09 /N /M ">    [9] Continue [0] Go back : "
 if %errorlevel%==1 goto at_menu
 
 cls
@@ -16690,7 +16710,7 @@ copy /y /b "%SystemRoot%\logs\cbs\cbs.log" "%SystemRoot%\logs\cbs\backup_cbs_%_t
 del /f /q "%SystemRoot%\logs\cbs\cbs.log" %nul%
 
 echo:
-echo Dang ap dung lenh...
+echo Applying the command...
 echo sfc /scannow
 sfc /scannow
 
@@ -16705,7 +16725,7 @@ copy /y /b "%SystemRoot%\logs\cbs\cbs.log" "!desktop!\AT_Logs\SFC_CBS_%_time%.lo
 )
 
 echo:
-call :dk_color %Gray% "Log CBS da duoc sao chep vao thu muc AT_Logs tren Desktop."
+call :dk_color %Gray% "The CBS log was copied to the AT_Logs folder on your Desktop."
 goto :at_back
 
 ::========================================================================================================================================
@@ -16717,36 +16737,36 @@ if not defined terminal (
 mode 125, 32
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=31;$B.Height=200;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  Sua loi ban quyen ^(ClipSVC ^+ SPP ^+ OSPP^)
+title  Fix Licensing ^(ClipSVC ^+ SPP ^+ OSPP^)
 
 if %winbuild% EQU 6001 (
 %eline%
-echo Tuy chon nay khong ho tro tren Windows Vista SP1.
-echo Nang cap len Windows Vista SP2.
+echo This option is not supported on Windows Vista SP1.
+echo Upgrade to Windows Vista SP2.
 goto :at_back
 )
 
 echo:
 echo %line%
 echo:   
-echo      Luu y:
+echo      Notes:
 echo:
-echo       - Tuy chon nay giup xu ly su co kich hoat.
+echo       - This option helps in troubleshooting activation issues.
 echo:
-echo       - Tuy chon nay se:
-echo            - Huy kich hoat Windows va Office, ban co the can kich hoat lai.
-echo              Neu Windows kich hoat bang bo mach chu / OEM / ban quyen so
-echo              thi Windows se tu kich hoat lai.
+echo       - This option will:
+echo            - Deactivate Windows and Office, you may need to reactivate.
+echo              If Windows is activated with motherboard / OEM / Digital license
+echo              then Windows will activate itself again.
 echo:
-echo            - Xoa ban quyen ClipSVC, SPP va OSPP.
-echo            - Sua quyen truy cap thu muc SPP tokens va registry.
-echo            - Kich hoat tuy chon sua chua cho Office.
+echo            - Clear ClipSVC, SPP and OSPP licenses.
+echo            - Fix permissions of SPP tokens folder and registries.
+echo            - Trigger the repair option for Office.
 echo:
-call :dk_color2 %_White% "      - " %Blue% "Chi ap dung tuy chon nay khi can thiet."
+call :dk_color2 %_White% "      - " %Blue% "Apply this option only when it is necessary."
 echo:
 echo %line%
 echo:
-choice /C:09 /N /M ">    [9] Tiep tuc [0] Quay lai : "
+choice /C:09 /N /M ">    [9] Continue [0] Go back : "
 if %errorlevel%==1 goto at_menu
 
 ::========================================================================================================================================
@@ -16759,18 +16779,18 @@ cls
 echo:
 echo %line%
 echo:
-call :dk_color %Blue% "Dang xay dung lai ban quyen ClipSVC..."
+call :dk_color %Blue% "Rebuilding ClipSVC Licenses..."
 echo:
 
 if %winbuild% LSS 10240 (
-echo Xay dung lai ban quyen ClipSVC chi ho tro tren Windows 10/11.
-echo Bo qua...
+echo ClipSVC license rebuilding is supported only on Windows 10/11.
+echo Skipping...
 goto :rebuildspptok
 )
 
 %psc% "(([WMISEARCHER]'SELECT Name FROM SoftwareLicensingProduct WHERE LicenseStatus=1 AND GracePeriodRemaining=0 AND PartialProductKey IS NOT NULL AND LicenseDependsOn is NULL').Get()).Name" %nul2% | findstr /i "Windows" %nul1% && (
-echo Windows da duoc kich hoat vinh vien.
-echo Bo qua...
+echo Windows is permanently activated.
+echo Skipping...
 goto :rebuildspptok
 )
 
@@ -16780,15 +16800,15 @@ for /f "tokens=2 delims==" %%# in ('%psc% "(([WMISEARCHER]'SELECT PartialProduct
 for %%# in (8HV2C QPFCT 3V66T PKCKT WXCHW 8TYMD 6F4BT 8HVX7 KD72Y 7CFBY DRR8H P39PB DYJWX MDWWW 9HKR4 M7V2X 2YV77 WT2RQ MHBPB QPF8P 2YV66 VMJ2C DJ4F6 CKFFD YY74H J8JXD BHDCD T6R4W D32MH RRK69 3PJBP) do if /i "%_partial%"=="%%#" set _keymatch=1
 
 if not defined _keymatch (
-echo Khoa kich hoat HWID chua duoc cai dat.
-echo Bo qua...
+echo HWID activation key is not installed.
+echo Skipping...
 goto :rebuildspptok
 )
 
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
 if errorlevel 1 (
-echo Khong co ket noi Internet.
-echo Bo qua...
+echo Internet is not connected.
+echo Skipping...
 goto :rebuildspptok
 )
 
@@ -16803,28 +16823,28 @@ if !errorlevel!==3 set resfail=1
 )
 
 if defined resfail (
-echo Khong the ket noi may chu ban quyen.
-echo Bo qua...
+echo Failed to connect to licensing servers.
+echo Skipping...
 goto :rebuildspptok
 )
 
-echo Dang dung dich vu ClipSVC...
+echo Stopping ClipSVC service...
 %psc% Stop-Service ClipSVC -force %nul%
 timeout /t 2 %nul%
 
 echo:
-echo Dang chay lenh de xoa ban quyen ClipSVC...
+echo Applying the command to clean ClipSVC Licenses...
 echo rundll32 clipc.dll,ClipCleanUpState
 
 rundll32 clipc.dll,ClipCleanUpState
 
 if %winbuild% LEQ 10240 (
-echo [Thanh cong]
+echo [Successful]
 ) else (
 if exist "%ProgramData%\Microsoft\Windows\ClipSVC\tokens.dat" (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 ) else (
-echo [Thanh cong]
+echo [Successful]
 )
 )
 
@@ -16838,25 +16858,25 @@ reg query "%RegKey%" %nul% && %nul% call :regownstart
 reg delete "%RegKey%" /f %nul% 
 
 echo:
-echo Dang xoa Registry Key bao ve...
+echo Deleting a Volatile ^& Protected Registry Key...
 echo [%RegKey%]
 reg query "%RegKey%" %nul% && (
-call :dk_color %Red% "[That bai]"
-echo Khoi dong lai may tinh, registry key nay se tu dong bi xoa.
+call :dk_color %Red% "[Failed]"
+echo Reboot your machine using the restart option, that will delete this registry key automatically.
 ) || (
-echo [Thanh cong]
+echo [Successful]
 )
 
 ::   Clear HWID token related registry to fix activation incase there is any corruption
 
 echo:
-echo Dang xoa IdentityCRL Registry Key...
+echo Deleting IdentityCRL Registry Key...
 echo [%_ident%]
 reg delete "%_ident%" /f %nul%
 reg query "%_ident%" %nul% && (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 ) || (
-echo [Thanh cong]
+echo [Successful]
 )
 
 %psc% Stop-Service ClipSVC -force %nul%
@@ -16865,29 +16885,29 @@ echo [Thanh cong]
 
 echo:
 if %winbuild% GTR 10240 (
-echo Dang xoa thu muc %ProgramData%\Microsoft\Windows\ClipSVC\
+echo Deleting folder %ProgramData%\Microsoft\Windows\ClipSVC\
 rmdir /s /q "C:\ProgramData\Microsoft\Windows\ClipSvc" %nul%
 
 if exist "%ProgramData%\Microsoft\Windows\ClipSVC\" (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 ) else (
-echo [Thanh cong]
+echo [Successful]
 )
 
 echo:
-echo Dang xay dung lai thu muc %ProgramData%\Microsoft\Windows\ClipSVC\...
+echo Rebuilding the %ProgramData%\Microsoft\Windows\ClipSVC\ folder...
 %psc% Start-Service ClipSVC %nul%
 timeout /t 3 %nul%
 if not exist "%ProgramData%\Microsoft\Windows\ClipSVC\" timeout /t 5 %nul%
 if not exist "%ProgramData%\Microsoft\Windows\ClipSVC\" (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 ) else (
-echo [Thanh cong]
+echo [Successful]
 )
 )
 
 echo:
-echo Dang khoi dong lai dich vu wlidsvc va LicenseManager...
+echo Restarting wlidsvc ^& LicenseManager services...
 for %%# in (wlidsvc LicenseManager) do (%psc% "Start-Job { Restart-Service %%# } | Wait-Job -Timeout 20 | Out-Null")
 
 ::========================================================================================================================================
@@ -16899,34 +16919,34 @@ for %%# in (wlidsvc LicenseManager) do (%psc% "Start-Job { Restart-Service %%# }
 echo:
 echo %line%
 echo:
-call :dk_color %Blue% "Dang xay dung lai SPP licensing tokens..."
+call :dk_color %Blue% "Rebuilding SPP licensing tokens..."
 echo:
 
-echo Dang xoa bo nho dem KMS...
+echo Clearing KMS Cache...
 echo:
 call :_taskclear-cache
 
 %nul% reg query "HKLM\%SPPk%\%_wApp%" && (
-echo Dang go KMS38 protection...
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':regdel\:.*';. ([scriptblock]::Create($f[1]))"
+echo Removing KMS38 protection...
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':regdel\:.*';. ([scriptblock]::Create($f[1]))"
 %nul% reg delete "HKLM\%SPPk%\%_wApp%" /f
 %nul% reg query "HKLM\%SPPk%\%_wApp%" && (
-call :dk_color %Red% "That bai khi go KMS38 protection."
+call :dk_color %Red% "Failed to remove KMS38 protection."
 ) || (
-echo Da go KMS38 protection thanh cong.
-echo Da xoa bo nho dem KMS thanh cong.
+echo Successfully removed KMS38 protection.
+echo Successfully cleared KMS Cache.
 )
 ) || (
-echo Da xoa bo nho dem KMS thanh cong.
+echo Successfully cleared KMS Cache.
 )
 echo:
 
 call :scandat check
 
 if not defined token (
-call :dk_color %Red% "Khong tim thay file tokens.dat."
+call :dk_color %Red% "tokens.dat file not found."
 ) else (
-echo File tokens.dat: [%token%]
+echo tokens.dat file: [%token%]
 )
 
 set tokenstore=
@@ -16935,31 +16955,31 @@ for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT
 if %winbuild% GEQ 9200 if /i not "%tokenstore%"=="%SysPath%\spp\store" if /i not "%tokenstore%"=="%SysPath%\spp\store\2.0" if /i not "%tokenstore%"=="%SysPath%\spp\store_test\2.0" (
 set badregistry=1
 echo:
-call :dk_color %Red% "Khong tim thay duong dan dung trong TokenStore Registry [%tokenstore%]"
+call :dk_color %Red% "Correct path not found in TokenStore Registry [%tokenstore%]"
 )
 
 ::  Check sppsvc permissions and apply fixes
 
 if %winbuild% GEQ 9200 if not defined badregistry (
 echo:
-echo Dang kiem tra van de quyen SPP...
+echo Checking SPP permission related issues...
 call :checkperms
 if defined permerror (
 call :dk_color %Red% "[!permerror!]"
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':fixsppperms\:.*';. ([scriptblock]::Create($f[1]))" %nul%
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':fixsppperms\:.*';. ([scriptblock]::Create($f[1]))" %nul%
 call :checkperms
 if defined permerror (
-call :dk_color %Red% "[!permerror!] [Sua that bai]"
+call :dk_color %Red% "[!permerror!] [Failed To Fix]"
 ) else (
-call :dk_color %Green% "[Da sua thanh cong]"
+call :dk_color %Green% "[Successfully Fixed]"
 )
 ) else (
-echo [Khong tim thay loi]
+echo [No Error Found]
 )
 )
 
 echo:
-echo Dang dung dich vu %_slser%...
+echo Stopping %_slser% service...
 %psc% Stop-Service %_slser% -force %nul%
 
 set w=
@@ -16967,7 +16987,7 @@ set _sppint=
 for %%# in (SppEx%w%tComObj.exe %_slexe%) do (reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu%w%tion Options\%%#" %nul% && (set _sppint=1))
 if defined _sppint (
 echo:
-echo Dang go SPP IFEO registry keys...
+echo Removing SPP IFEO registry keys...
 for %%# in (SppE%w%xtComObj.exe %_slexe%) do (reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu%w%tion Options\%%#" /f %nul%)
 )
 
@@ -16975,13 +16995,13 @@ if %winbuild% LSS 9200 if not defined _vis (
 REM Fix issues caused by Update KB971033 in Windows 7
 REM https://support.microsoft.com/en-us/help/4487266
 echo:
-echo Kiem tra cap nhat KB971033...
+echo Checking Update KB971033...
 %psc% "if (Get-Hotfix -Id KB971033 -ErrorAction SilentlyContinue) {Exit 3}" %nul%
 if !errorlevel!==3 (
-echo Tim thay, dang go cai dat...
+echo Found, uninstalling it...
 wusa /uninstall /quiet /norestart /kb:971033
 ) else (
-echo [Khong tim thay]
+echo [Not Found]
 )
 %psc% Stop-Service sppuinotify -force %nul%
 sc config sppuinotify start= disabled
@@ -16992,7 +17012,7 @@ del /f /q %SysPath%\7B296FB0-376B-497e-B012-9C450E1B7327-*.C7483456-A289-439d-81
 
 if not defined _vis (
 echo:
-echo Dang don dep cac registry key lien quan den ban quyen...
+echo Cleaning some licensing-related registry keys...
 %nul% reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "ServiceSessionId" /f
 %nul% reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "LicStatusArray" /f
 %nul% reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "PolicyValuesArray" /f
@@ -17006,7 +17026,7 @@ call :scandat check
 
 if defined token (
 echo:
-call :dk_color %Red% "That bai khi xoa cac file .dat."
+call :dk_color %Red% "Failed to delete .dat files."
 echo:
 )
 
@@ -17015,22 +17035,22 @@ if defined _vis (
 )
 
 echo:
-echo Dang cai dat lai ban quyen he thong...
-%psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
-if %errorlevel% NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+echo Reinstalling system licenses...
+%psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+if %errorlevel% NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 if %errorlevel% EQU 0 (
-echo [Thanh cong]
+echo [Successful]
 ) else (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 )
 
 call :scandat check
 
 echo:
 if not defined token (
-call :dk_color %Red% "That bai khi xay dung lai file tokens.dat."
+call :dk_color %Red% "Failed to rebuild tokens.dat file."
 ) else (
-echo File tokens.dat da duoc xay dung lai thanh cong.
+echo tokens.dat file was rebuilt successfully.
 )
 
 if %winbuild% LSS 9200 if not defined _vis (
@@ -17044,25 +17064,25 @@ sc config sppuinotify start= demand
 echo:
 echo %line%
 echo:
-call :dk_color %Blue% "Dang xay dung lai OSPP licensing tokens..."
+call :dk_color %Blue% "Rebuilding OSPP licensing tokens..."
 echo:
 
 sc qc osppsvc %nul% || (
-echo Office dua tren OSPP chua duoc cai dat.
-echo Bo qua xay dung lai OSPP tokens...
+echo OSPP-based Office is not installed.
+echo Skipping rebuilding OSPP tokens...
 goto :repairoffice
 )
 
 call :scandatospp check
 
 if not defined token (
-call :dk_color %Red% "Khong tim thay file tokens.dat."
+call :dk_color %Red% "tokens.dat file not found."
 ) else (
-echo File tokens.dat: [%token%]
+echo tokens.dat file: [%token%]
 )
 
 echo:
-echo Dang dung dich vu osppsvc...
+echo Stopping osppsvc service...
 %psc% Stop-Service osppsvc -force %nul%
 
 echo:
@@ -17071,12 +17091,12 @@ call :scandatospp check
 
 if defined token (
 echo:
-call :dk_color %Red% "That bai khi xoa cac file .dat."
+call :dk_color %Red% "Failed to delete .dat files."
 echo:
 )
 
 echo:
-echo Dang khoi dong dich vu osppsvc de tao tokens.dat...
+echo Starting osppsvc service to generate tokens.dat...
 %psc% Start-Service osppsvc %nul%
 call :scandatospp check
 if not defined token (
@@ -17089,9 +17109,9 @@ call :scandatospp check
 
 echo:
 if not defined token (
-call :dk_color %Red% "That bai khi xay dung lai file tokens.dat."
+call :dk_color %Red% "Failed to rebuild tokens.dat file."
 ) else (
-echo File tokens.dat da duoc xay dung lai thanh cong.
+echo tokens.dat file was rebuilt successfully.
 )
 
 ::========================================================================================================================================
@@ -17101,7 +17121,7 @@ echo File tokens.dat da duoc xay dung lai thanh cong.
 echo:
 echo %line%
 echo:
-call :dk_color %Blue% "Dang sua chua ban quyen Office..."
+call :dk_color %Blue% "Repairing Office licenses..."
 echo:
 
 for %%# in (68 86) do (
@@ -17132,7 +17152,7 @@ if %winbuild% GEQ 10240 (
 )
 
 set /a counter=0
-echo Kiem tra cac phien ban Office da cai dat...
+echo Checking installed Office versions...
 echo:
 
 for %%# in (
@@ -17160,30 +17180,30 @@ set /a counter+=1
 
 if %counter% GTR 1 (
 %eline%
-echo Tim thay nhieu phien ban Office.
-echo Khuyen nghi chi cai dat mot phien ban Office.
+echo Multiple Office versions found.
+echo It is recommended to only install one version of Office.
 echo ________________________________________________________________
 echo:
 )
 
 echo:
 if %counter% EQU 0 (
-echo Office (2010 tro len) chua duoc cai dat.
+echo Office ^(2010 and later^) is not installed.
 goto :repairend
 ) else if not defined c2r16_68 if not defined c2r16_86 (
-call :dk_color %_Yellow% "Cua so moi se xuat hien, ban can chon tuy chon [Quick Repair] trong do."
+call :dk_color %_Yellow% "A new window will appear, in that window you need to select [Quick Repair] option."
 if defined terminal (
-call :dk_color %_Yellow% "Nhan [0] de tiep tuc..."
+call :dk_color %_Yellow% "Press [0] to continue..."
 choice /c 0 /n
 ) else (
-call :dk_color %_Yellow% "Nhan phim bat ky de tiep tuc..."
+call :dk_color %_Yellow% "Press any key to continue..."
 pause %nul1%
 )
 )
 
 if defined uwp16 (
 echo:
-echo Bo qua sua chua Office 16.0 UWP... 
+echo Skipping repair for Office 16.0 UWP... 
 echo:
 )
 
@@ -17193,20 +17213,20 @@ if defined c2r14_86 set c2r14=1
 
 if defined c2r14 (
 echo:
-echo Bo qua sua chua Office 14.0 C2R...
+echo Skipping repair for Office 14.0 C2R...
 echo:
 )
 
-if defined msi14_68 if exist "%msi14repair68%" echo Dang chay - "%msi14repair68%"                                        & "%msi14repair68%"
-if defined msi14_86 if exist "%msi14repair86%" echo Dang chay - "%msi14repair86%"                                        & "%msi14repair86%"
-if defined msi15_68 if exist "%msi15repair68%" echo Dang chay - "%msi15repair68%"                                        & "%msi15repair68%"
-if defined msi15_86 if exist "%msi15repair86%" echo Dang chay - "%msi15repair86%"                                        & "%msi15repair86%"
-if defined msi16_68 if exist "%msi16repair68%" echo Dang chay - "%msi16repair68%"                                        & "%msi16repair68%"
-if defined msi16_86 if exist "%msi16repair86%" echo Dang chay - "%msi16repair86%"                                        & "%msi16repair86%"
-if defined c2r15_68 if exist "%c2r15repair68%" echo Dang chay - "%c2r15repair68%" REPAIRUI RERUNMODE                     & "%c2r15repair68%" REPAIRUI RERUNMODE
-if defined c2r15_86 if exist "%c2r15repair86%" echo Dang chay - "%c2r15repair86%" REPAIRUI RERUNMODE                     & "%c2r15repair86%" REPAIRUI RERUNMODE
-if defined c2r16_68 if exist "%c2r16repair68%" echo Dang chay - "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair
-if defined c2r16_86 if exist "%c2r16repair86%" echo Dang chay - "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair
+if defined msi14_68 if exist "%msi14repair68%" echo Running - "%msi14repair68%"                                        & "%msi14repair68%"
+if defined msi14_86 if exist "%msi14repair86%" echo Running - "%msi14repair86%"                                        & "%msi14repair86%"
+if defined msi15_68 if exist "%msi15repair68%" echo Running - "%msi15repair68%"                                        & "%msi15repair68%"
+if defined msi15_86 if exist "%msi15repair86%" echo Running - "%msi15repair86%"                                        & "%msi15repair86%"
+if defined msi16_68 if exist "%msi16repair68%" echo Running - "%msi16repair68%"                                        & "%msi16repair68%"
+if defined msi16_86 if exist "%msi16repair86%" echo Running - "%msi16repair86%"                                        & "%msi16repair86%"
+if defined c2r15_68 if exist "%c2r15repair68%" echo Running - "%c2r15repair68%" REPAIRUI RERUNMODE                     & "%c2r15repair68%" REPAIRUI RERUNMODE
+if defined c2r15_86 if exist "%c2r15repair86%" echo Running - "%c2r15repair86%" REPAIRUI RERUNMODE                     & "%c2r15repair86%" REPAIRUI RERUNMODE
+if defined c2r16_68 if exist "%c2r16repair68%" echo Running - "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair
+if defined c2r16_86 if exist "%c2r16repair86%" echo Running - "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair
 
 :repairend
 
@@ -17214,7 +17234,7 @@ echo:
 echo %line%
 echo:
 echo:
-call :dk_color %Green% "Hoan tat"
+call :dk_color %Green% "Finished"
 goto :at_back
 
 :getc2rrepair
@@ -17248,18 +17268,18 @@ exit /b
 
 cls
 if not defined terminal mode 98, 34
-title  Sua WMI
+title  Fix WMI
 
 ::  https://techcommunity.microsoft.com/t5/ask-the-performance-team/wmi-repository-corruption-or-not/ba-p/375484
 
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
 %eline%
-echo Khong khuyen nghi xay dung lai WMI tren Windows Server, dang huy...
+echo Rebuilding WMI is not recommended on Windows Server, aborting...
 goto :at_back
 )
 
 echo:
-echo Kiem tra WMI
+echo Checking WMI
 call :checkwmi
 
 ::  Apply basic fix first and check
@@ -17271,12 +17291,12 @@ call :checkwmi
 )
 
 if not defined error (
-echo [Hoat dong]
-echo Khong can ap dung tuy chon nay, dang huy...
+echo [Working]
+echo No need to apply this option, aborting...
 goto :at_back
 )
 
-call :dk_color %Red% "[Khong phan hoi]"
+call :dk_color %Red% "[Not Responding]"
 
 set _corrupt=
 sc start Winmgmt %nul%
@@ -17287,79 +17307,79 @@ for %%G in (DependOnService Description DisplayName ErrorControl ImagePath Objec
 echo:
 if defined _corrupt (
 %eline%
-echo Dich vu Winmgmt bi loi, dang huy...
+echo Winmgmt service is corrupted, aborting...
 goto :at_back
 )
 
-echo Dang vo hieu hoa dich vu Winmgmt
+echo Disabling Winmgmt service
 sc config Winmgmt start= disabled %nul%
 if %errorlevel% EQU 0 (
-echo [Thanh cong]
+echo [Successful]
 ) else (
-call :dk_color %Red% "[That bai] Dang huy..."
+call :dk_color %Red% "[Failed] Aborting..."
 sc config Winmgmt start= auto %nul%
 goto :at_back
 )
 
 echo:
-echo Dang dung dich vu Winmgmt
+echo Stopping Winmgmt service
 %psc% Stop-Service Winmgmt -force %nul%
 %psc% Stop-Service Winmgmt -force %nul%
 %psc% Stop-Service Winmgmt -force %nul%
 sc query Winmgmt | find /i "STOPPED" %nul% && (
-echo [Thanh cong]
+echo [Successful]
 ) || (
-call :dk_color %Red% "[That bai]"
-call :dk_color %Blue% "Khuyen nghi chon [Khoi dong lai] va sau do ap dung Sua WMI lai lan nua."
+call :dk_color %Red% "[Failed]"
+call :dk_color %Blue% "Its recommended to select [Restart] option and then apply Fix WMI option again."
 echo %line%
 echo:
-choice /C:21 /N /M "> [1] Khoi dong lai  [2] Hoan tac thay doi :"
+choice /C:21 /N /M "> [1] Restart  [2] Revert Back Changes :"
 if !errorlevel!==1 (sc config Winmgmt start= auto %nul%&goto :at_back)
 echo:
-echo Dang khoi dong lai...
+echo Restarting...
 shutdown -t 5 -r
 exit
 )
 
 echo:
-echo Dang xoa WMI repository
+echo Deleting WMI repository
 rmdir /s /q "%SysPath%\wbem\repository\" %nul%
 if exist "%SysPath%\wbem\repository\" (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 ) else (
-echo [Thanh cong]
+echo [Successful]
 )
 
 echo:
-echo Dang kich hoat dich vu Winmgmt
+echo Enabling Winmgmt service
 sc config Winmgmt start= auto %nul%
 if %errorlevel% EQU 0 (
-echo [Thanh cong]
+echo [Successful]
 ) else (
-call :dk_color %Red% "[That bai]"
+call :dk_color %Red% "[Failed]"
 )
 
 call :checkwmi
 if not defined error (
 echo:
-echo Kiem tra WMI
-call :dk_color %Green% "[Hoat dong]"
+echo Checking WMI
+call :dk_color %Green% "[Working]"
 goto :at_back
 )
 
 echo:
-echo Dang dang ky .dll va bien dich .mof, .mfl
+echo Registering .dll's and Compiling .mof's, .mfl's
 call :registerobj %nul%
 
 echo:
-echo Kiem tra WMI
+echo Checking WMI
 call :checkwmi
 if defined error (
-call :dk_color %Red% "[Khong phan hoi]"
+call :dk_color %Red% "[Not Responding]"
 echo:
-echo Chay [Dism RestoreHealth] va [SFC Scannow] va dam bao khong co loi.
+echo Run [Dism RestoreHealth] and [SFC Scannow] options and make sure there are no errors.
 ) else (
-call :dk_color %Green% "[Hoat dong]"
+call :dk_color %Green% "[Working]"
 )
 
 goto :at_back
@@ -17408,10 +17428,10 @@ echo:
 echo %line%
 echo:
 if defined terminal (
-call :dk_color %_Yellow% "Nhan phim [0] de %_exitmsg%..."
+call :dk_color %_Yellow% "Press [0] key to %_exitmsg%..."
 choice /c 0 /n
 ) else (
-call :dk_color %_Yellow% "Nhan phim bat ky de %_exitmsg%..."
+call :dk_color %_Yellow% "Press any key to %_exitmsg%..."
 pause %nul1%
 )
 goto :at_menu
@@ -17640,7 +17660,7 @@ exit /b
 
 :regownstart
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':regown\:.*';. ([scriptblock]::Create($f[1]));"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':regown\:.*';. ([scriptblock]::Create($f[1]));"
 exit /b
 
 ::  Below code takes ownership of a volatile registry key and deletes it
@@ -17711,17 +17731,17 @@ set "line=echo _________________________________________________________________
 
 cls
 if not defined terminal mode 98, 30
-title  Doi phien ban Windows %masver%
+title  Change Windows Edition %masver%
 
 if %winbuild% LSS 7600 (
 %eline%
-echo Phat hien phien ban OS khong ho tro [%winbuild%].
-echo Tuy chon nay chi ho tro Windows 7/8/8.1/10/11 va cac phien ban Server tuong ung.
+echo Unsupported OS version detected [%winbuild%].
+echo This option is supported only for Windows 7/8/8.1/10/11 and their Server equivalents.
 goto dk_done
 )
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 echo:
 
 for %%# in (
@@ -17730,11 +17750,11 @@ dism.exe
 ) do (
 if not exist %SysPath%\%%# (
 %eline%
-echo [%SysPath%\%%#] tep bi thieu, dang huy...
-call :dk_color %Blue% "Quay lai Menu chinh, chon Xu ly su co va chay DISM Restore va SFC Scan."
-call :dk_color %Blue% "Sau do, khoi dong lai he thong va thu kich hoat lai."
+echo [%SysPath%\%%#] file is missing, aborting...
+call :dk_color %Blue% "Go back to Main Menu, select Troubleshoot and run DISM Restore and SFC Scan options."
+call :dk_color %Blue% "After that, restart system and try activation again."
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Neu van gap loi nay, thu cach nay - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "If it still shows the same error, do this - " %_Yellow% " %mas%in-place_repair_upgrade"
 goto dk_done
 )
 )
@@ -17764,8 +17784,8 @@ if defined UBR (set "fullbuild=%%G.!UBR!") else (set "fullbuild=%%G.%%H")
 call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 if not defined allapps (
 %eline%
-echo Khong tim thay ID kich hoat. Dang huy...
-call :dk_color %Blue% "De sua loi nay, kich hoat Windows tu menu chinh."
+echo Failed to find activation IDs. Aborting...
+call :dk_color %Blue% "To fix this issue, activate Windows from the main menu."
 goto dk_done
 )
 
@@ -17785,8 +17805,8 @@ if not defined osedition %chkedi% do if not errorlevel 1 (call set "osedition=%%
 
 if not defined osedition (
 %eline%
-echo Khong the phat hien phien ban OS, dang huy...
-call :dk_color %Blue% "De sua loi nay, kich hoat Windows tu menu chinh."
+echo Failed to detect OS edition, aborting...
+call :dk_color %Blue% "To fix this issue, activate Windows from the main menu."
 goto dk_done
 )
 
@@ -17809,7 +17829,7 @@ set _ntarget=
 set _wtarget=
 
 if %winbuild% GEQ 10240 for /f "tokens=4" %%a in ('dism /online /english /Get-TargetEditions ^| findstr /i /c:"Target Edition : "') do (if defined _dtarget (set "_dtarget= !_dtarget! %%a ") else (set "_dtarget= %%a "))
-if %winbuild% LSS 10240 for /f "tokens=4" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -GetTargetEditions;" ^| findstr /i /c:"Target Edition : "') do (if defined _ptarget (set "_ptarget= !_ptarget! %%a ") else (set "_ptarget= %%a "))
+if %winbuild% LSS 10240 for /f "tokens=4" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -GetTargetEditions;" ^| findstr /i /c:"Target Edition : "') do (if defined _ptarget (set "_ptarget= !_ptarget! %%a ") else (set "_ptarget= %%a "))
 
 if %winbuild% GEQ 10240 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
 if %winbuild% GEQ 17063 call :ced_edilist
@@ -17823,13 +17843,13 @@ set "_dtarget= %_dtarget% !_wtarget! !_pro! "
 for %%# in (CloudEdition CloudEditionN ServerRdsh) do if /i %osedition%==%%# (
 cls
 echo:
-call :dk_color %Red% "==== Luu y ===="
+call :dk_color %Red% "==== Note ===="
 echo:
 echo [EditionID:%osedition% ^| %fullbuild%]
 echo:
-echo Doi phien ban nay co the khong xoa cac tinh nang cua "%osedition%".
+echo Changing this edition may not remove "%osedition%"-specific features.
 echo:
-call :dk_color %_Yellow% "Nhan [7] de tiep tuc..."
+call :dk_color %_Yellow% "Press [7] to continue anyway..."
 choice /c 7 /n
 cls
 )
@@ -17847,9 +17867,9 @@ echo %%# | findstr /i "CountrySpecific CloudEdition" %nul% || (set "_ntarget=!_n
 if not defined _ntarget (
 %line%
 echo:
-if defined dismnotworking call :dk_color %Red% "DISM.exe khong hoat dong."
-call :dk_color %Gray% "Khong tim thay phien ban muc tieu."
-echo Phien ban hien tai [%osedition% ^| %winbuild%] khong the doi sang phien ban khac.
+if defined dismnotworking call :dk_color %Red% "DISM.exe is not working."
+call :dk_color %Gray% "Target editions not found."
+echo Current Edition [%osedition% ^| %winbuild%] can not be changed to any other Edition.
 %line%
 goto dk_done
 )
@@ -17867,11 +17887,11 @@ set targetedition=
 
 %line%
 echo:
-call :dk_color %Gray% "Ban co the doi phien ban [%osedition%] [%fullbuild%] sang mot trong cac phien ban sau."
+call :dk_color %Gray% "You can change the edition [%osedition%] [%fullbuild%] to one of the following."
 %showeditionerror%
 if defined dismnotworking (
-call :dk_color %_Yellow% "Luu y - DISM.exe khong hoat dong."
-if /i "%osedition:~0,4%"=="Core" call :dk_color %_Yellow% "     - Ban se thay nhieu tuy chon phien ban hon sau khi doi sang Pro."
+call :dk_color %_Yellow% "Note - DISM.exe is not working."
+if /i "%osedition:~0,4%"=="Core" call :dk_color %_Yellow% "     - You will see more edition options to choose once its changed to Pro."
 )
 %line%
 echo:
@@ -17890,7 +17910,7 @@ set targetedition!counter!=%%A
 echo:
 echo [0]  %_exitmsg%
 echo:
-call :dk_color %_Green% "Nhap so tuy chon bang ban phim va nhan Enter de xac nhan:"
+call :dk_color %_Green% "Enter an option number using your keyboard and press Enter to confirm:"
 set /p inpt=
 if "%inpt%"=="" goto cedmenu2
 if "%inpt%"=="0" exit /b
@@ -17908,15 +17928,15 @@ if not defined terminal mode con cols=105 lines=32
 
 if /i "%targetedition%"=="ServerRdsh" (
 echo:
-call :dk_color %Red% "==== Luu y ===="
+call :dk_color %Red% "==== Note ===="
 echo:
-echo Sau khi doi phien ban sang "%targetedition%", 
-echo he thong co the khong doi duoc phien ban sau nay.
+echo Once the edition is changed to "%targetedition%", 
+echo the system may not be able to properly change edition later.
 echo:
-echo [1] Tiep tuc
-echo [0] Quay lai
+echo [1] Continue Anyway
+echo [0] Go Back
 echo:
-call :dk_color %_Green% "Chon tuy chon bang ban phim [1,0] :"
+call :dk_color %_Green% "Choose a menu option using your keyboard [1,0] :"
 choice /C:10 /N
 if !errorlevel!==2 goto cedmenu2
 if !errorlevel!==1 rem
@@ -17949,9 +17969,9 @@ set _chan=Retail
 if not defined key (
 %eline%
 echo [%targetedition% ^| %winbuild%]
-echo Khong the lay khoa san pham tu pkeyhelper.dll.
+echo Failed to get product key from pkeyhelper.dll.
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 
@@ -17970,26 +17990,26 @@ cls
 %line%
 echo:
 %showeditionerror%
-if defined dismnotworking call :dk_color %_Yellow% "DISM.exe khong hoat dong."
-echo Dang doi phien ban hien tai [%osedition%] %fullbuild% sang [%targetedition%]...
+if defined dismnotworking call :dk_color %_Yellow% "DISM.exe is not working."
+echo Changing the current edition [%osedition%] %fullbuild% to [%targetedition%]...
 echo:
 
 if %_dismapi%==1 (
-call :dk_color %Green% "Luu y -"
+call :dk_color %Green% "Notes -"
 echo:
-echo  - Luu cong viec truoc khi tiep tuc, he thong se tu khoi dong lai.
+echo  - Save your work before continuing, the system will auto-restart.
 echo:
-echo  - Ban can kich hoat bang tuy chon HWID sau khi doi phien ban.
+echo  - You will need to activate with HWID option once the edition is changed.
 %line%
 echo:
-choice /C:21 /N /M "[1] Tiep tuc [2] %_exitmsg% : "
+choice /C:21 /N /M "[1] Continue [2] %_exitmsg% : "
 if !errorlevel!==1 exit /b
 )
 
 ::========================================================================================================================================
 
 if %_dismapi%==0 (
-echo Dang cai dat khoa %_chan% [%key%]
+echo Installing %_chan% key [%key%]
 echo:
 if %_wmic% EQU 1 wmic path %sps% where __CLASS='%sps%' call InstallProductKey ProductKey="%key%" %nul%
 if %_wmic% EQU 0 %psc% "try { $null=(([WMISEARCHER]'SELECT Version FROM %sps%').Get()).InstallProductKey('%key%'); exit 0 } catch { exit $_.Exception.InnerException.HResult }" %nul%
@@ -17999,25 +18019,25 @@ if !keyerror! NEQ 0 set "keyerror=[0x!=ExitCode!]"
 
 if !keyerror! EQU 0 (
 call :dk_refresh
-call :dk_color %Green% "[Thanh cong]"
+call :dk_color %Green% "[Successful]"
 echo:
-call :dk_color %Gray% "Can khoi dong lai de hoan tat doi phien ban."
+call :dk_color %Gray% "Reboot is required to fully change the edition."
 ) else (
-call :dk_color %Red% "[Khong thanh cong] [Ma loi: !keyerror!]"
+call :dk_color %Red% "[Unsuccessful] [Error Code: !keyerror!]"
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 )
 
 if %_dismapi%==1 (
 echo:
-echo Dang ap dung phuong thuc DISM API voi khoa %_chan% %key%. Vui long cho...
+echo Applying the DISM API method with %_chan% key %key%. Please wait...
 echo:
 
 call :ced_prep
 if defined preperror goto dk_done
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':dismapi\:.*';. ([scriptblock]::Create($f[1])) %targetedition% %key%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':dismapi\:.*';. ([scriptblock]::Create($f[1])) %targetedition% %key%"
 call :ced_postprep
 )
 %line%
@@ -18039,23 +18059,23 @@ if defined rebootreq goto dk_done
 
 echo:
 %showeditionerror%
-if defined dismnotworking call :dk_color %_Yellow% "Luu y - DISM.exe khong hoat dong."
-echo Dang doi phien ban hien tai [%osedition%] %fullbuild% sang [%targetedition%]...
+if defined dismnotworking call :dk_color %_Yellow% "Note - DISM.exe is not working."
+echo Changing the current edition [%osedition%] %fullbuild% to [%targetedition%]...
 echo:
-call :dk_color %Blue% "Quan trong - Luu cong viec truoc khi tiep tuc, he thong se tu khoi dong lai."
+call :dk_color %Blue% "Important - Save your work before continuing, the system will auto-restart."
 echo:
-choice /C:01 /N /M "[1] Tiep tuc [0] %_exitmsg% : "
+choice /C:01 /N /M "[1] Continue [0] %_exitmsg% : "
 if %errorlevel%==1 exit /b
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 echo:
 
 call :ced_prep
 if defined preperror goto dk_done
 
 if %_stg%==0 (set stage=) else (set stage=-StageCurrent)
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -SetEdition %targetedition% %stage%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -SetEdition %targetedition% %stage%"
 call :ced_postprep
 %line%
 
@@ -18083,9 +18103,9 @@ if not defined key call :changeeditiondata
 if not defined key (
 %eline%
 echo [%targetedition% ^| %winbuild%]
-echo Khong the lay khoa san pham tu pkeyhelper.dll.
+echo Failed to get product key from pkeyhelper.dll.
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 
@@ -18095,14 +18115,14 @@ if defined rebootreq goto dk_done
 cls
 echo:
 %showeditionerror%
-if defined dismnotworking call :dk_color %_Yellow% "Luu y - DISM.exe khong hoat dong."
-echo Dang doi phien ban hien tai [%osedition%] %fullbuild% sang [%targetedition%]...
+if defined dismnotworking call :dk_color %_Yellow% "Note - DISM.exe is not working."
+echo Changing the current edition [%osedition%] %fullbuild% to [%targetedition%]...
 echo:
 
 call :ced_prep
 if defined preperror goto dk_done
 
-echo Dang ap dung lenh voi khoa %_chan%...
+echo Applying the command with %_chan% key...
 echo DISM /online /Set-Edition:%targetedition% /ProductKey:%key% /AcceptEula
 DISM /online /Set-Edition:%targetedition% /ProductKey:%key% /AcceptEula
 
@@ -18124,8 +18144,8 @@ for /f %%a in ('%psc% "(Get-Date).ToString('yyyyMMdd-HHmmssfff')"') do set _time
 
 sc query TrustedInstaller | find /i "RUNNING" %nul% && (
 %eline%
-echo Khong the dung dich vu TrustedInstaller.
-echo Khoi dong lai may tinh va thu lai.
+echo Failed to stop the TrustedInstaller service.
+echo Reboot your machine using the restart option and try again.
 set preperror=1
 exit /b
 )
@@ -18156,12 +18176,12 @@ call :compresslog DISM\dism_%_time%.log ChangeEdition_Logs\DISM %nul%
 
 echo:
 if %winbuild% GEQ 9200 %psc% "if ((Get-WindowsOptionalFeature -Online -FeatureName NetFx3).State -eq 'Enabled') {Write-Host 'Checking .NET Framework 3.5 Status - Enabled'}"
-echo Cac file log da duoc sao chep vao thu muc ChangeEdition_Logs tren desktop.
+echo Log files are copied to the ChangeEdition_Logs folder on your desktop.
 echo:
-call :dk_color %Blue% "Neu co loi, ban nen khoi dong lai he thong truoc khi thu lai."
+call :dk_color %Blue% "In case there are errors, you should restart the system before trying again."
 echo:
 set fixes=%fixes% %mas%change_edition_issues
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%change_edition_issues"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%change_edition_issues"
 exit /b
 
 ::========================================================================================================================================
@@ -18187,9 +18207,9 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Upd
 
 if defined rebootreq (
 %eline%
-echo Tim thay co khoi dong lai cho xu ly.
+echo Pending reboot flags found.
 echo:
-echo Dam bao Windows da cap nhat day du, khoi dong lai he thong va thu lai.
+echo Make sure Windows is fully updated, restart the system and try again.
 )
 exit /b
 
@@ -18573,17 +18593,17 @@ set "line=echo _________________________________________________________________
 
 cls
 if not defined terminal mode 98, 30
-title  Doi phien ban Office %masver%
+title  Change Office Edition %masver%
 
 if %winbuild% LSS 7600 (
 %eline%
-echo Phat hien phien ban OS khong ho tro [%winbuild%].
-echo Tuy chon nay chi ho tro Windows 7/8/8.1/10/11 va cac phien ban Server tuong ung.
+echo Unsupported OS version detected [%winbuild%].
+echo This option is supported only for Windows 7/8/8.1/10/11 and their Server equivalents.
 goto dk_done
 )
 
 echo:
-echo Dang khoi tao...
+echo Initializing...
 echo:
 
 ::========================================================================================================================================
@@ -18617,8 +18637,8 @@ if %_wmic% EQU 0 set "chkedi=for /f "tokens=2 delims==" %%a in ('%psc% "(([WMISE
 
 if %osedition%==0 (
 %eline%
-echo Khong the phat hien phien ban OS. Dang huy...
-call :dk_color %Blue% "De sua loi nay, kich hoat Windows tu menu chinh."
+echo Failed to detect OS Edition. Aborting...
+call :dk_color %Blue% "To fix this issue, activate Windows from the main menu."
 goto dk_done
 )
 
@@ -18635,8 +18655,8 @@ for /f "skip=2 tokens=2*" %%a in ('"reg query %_68%\ClickToRun /v InstallPath" %
 
 if not defined o16c2r_reg (
 %eline%
-echo Office C2R 2016 tro len chua cai dat, day la yeu cau cho script nay.
-echo Tai va cai dat Office tu link ben duoi va thu lai.
+echo Office C2R 2016 or later is not installed, which is required for this script.
+echo Download and install Office from below URL and try again.
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto dk_done
@@ -18650,10 +18670,10 @@ call :ch_getinfo
 
 if %verchk% LSS 9029 (
 %eline%
-echo Phien ban Office da cai dat la %_version%.
-echo Phien ban toi thieu yeu cau la 16.0.9029.2167
-echo Dang huy...
-call :dk_color %Blue% "Tai va cai dat Office moi nhat tu link ben duoi va thu lai."
+echo Installed Office version is %_version%.
+echo Minimum required version is 16.0.9029.2167
+echo Aborting...
+call :dk_color %Blue% "Download and install latest Office from below URL and try again."
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto dk_done
@@ -18674,8 +18694,8 @@ _masterxml
 ) do (
 if not defined %%A (
 %eline%
-echo Khong tim thay %%A. Dang huy...
-call :dk_color %Blue% "Tai va cai dat Office tu link ben duoi va thu lai."
+echo Failed to find %%A. Aborting...
+call :dk_color %Blue% "Download and install Office from below URL and try again."
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto dk_done
@@ -18684,11 +18704,11 @@ goto dk_done
 
 if %winbuild% LSS 10240 if defined ltscfound (
 %eline%
-echo Office da cai dat co ve tu kenh Volume %ltsc19%%ltsc21%%ltsc24%,
-echo khong duoc ho tro chinh thuc tren phien ban Windows build %winbuild%.
-echo Dang huy...
+echo Installed Office appears to be from the Volume channel %ltsc19%%ltsc21%%ltsc24%,
+echo which is not officially supported on your Windows build version %winbuild%.
+echo Aborting...
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 
@@ -18698,10 +18718,10 @@ if %winbuild% LSS 9200 if %verchk% GTR 12527 set unsupbuild=1
 
 if defined unsupbuild (
 %eline%
-echo Office %verchk% khong ho tro da cai dat tren Windows build %winbuild%.
-echo Dang huy...
+echo Unsupported Office %verchk% is installed on your Windows build version %winbuild%.
+echo Aborting...
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
 
@@ -18712,25 +18732,25 @@ goto dk_done
 cls
 set fixes=
 if not defined terminal mode 76, 25
-title  Doi phien ban Office %masver%
+title  Change Office Edition %masver%
 echo:
 echo:
 echo:
 echo:
 echo         ____________________________________________________________
 echo:
-echo                 [1] Doi tat ca phien ban
-echo                 [2] Them phien ban
-echo                 [3] Go phien ban
+echo                 [1] Change all editions
+echo                 [2] Add edition
+echo                 [3] Remove edition
 echo:
-echo                 [4] Them/Go ung dung
+echo                 [4] Add/Remove apps
 echo                 ____________________________________________
 echo:
-echo                 [5] Doi kenh cap nhat Office
+echo                 [5] Change Office Update Channel
 echo                 [0] %_exitmsg%
 echo         ____________________________________________________________
 echo: 
-call :dk_color2 %_White% "           " %_Green% "Chon tuy chon bang ban phim [1,2,3,4,5,0]"
+call :dk_color2 %_White% "           " %_Green% "Choose a menu option using your keyboard [1,2,3,4,5,0]"
 choice /C:123450 /N
 set _el=!errorlevel!
 if !_el!==6  exit /b
@@ -18754,16 +18774,16 @@ goto :oe_goback
 cls
 if not defined terminal mode 76, 25
 if %change%==1 (
-title  Doi tat ca phien ban %masver%
+title  Change all editions %masver%
 ) else (
-title  Them phien ban %masver%
+title  Add edition %masver%
 )
 
 echo:
 echo:
 echo:
 echo:
-echo                 Phien ban O365/Mondo co cac tinh nang moi nhat.     
+echo                 O365/Mondo editions have the latest features.     
 echo         ____________________________________________________________
 echo:
 echo                 [1] Office Suites     - Retail
@@ -18772,10 +18792,10 @@ echo                 [3] Office SingleApps - Retail
 echo                 [4] Office SingleApps - Volume
 echo                 ____________________________________________
 echo:
-echo                 [0] Quay lai
+echo                 [0] Go Back
 echo         ____________________________________________________________
 echo: 
-call :dk_color2 %_White% "            " %_Green% "Chon tuy chon bang ban phim [1,2,3,4,0]"
+call :dk_color2 %_White% "            " %_Green% "Choose a menu option using your keyboard [1,2,3,4,0]"
 choice /C:12340 /N
 set _el=!errorlevel!
 if !_el!==5  goto :oemenu
@@ -18793,7 +18813,7 @@ cls
 set editedition=
 call :ch_getinfo
 call :oe_tempcleanup
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':getlist\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getlist\:.*';. ([scriptblock]::Create($f[1]))"
 
 :oe_editionchange
 
@@ -18805,9 +18825,9 @@ mode 98, 45
 
 if not exist %SystemRoot%\Temp\%list%.txt (
 %eline%
-echo Khong the tao danh sach phien ban kha dung.
+echo Failed to generate available editions list.
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
 )
 
@@ -18819,10 +18839,10 @@ set targetedition=
 
 %line%
 echo:
-call :dk_color %Gray% "Phien ban Office da cai dat: %_oIds%"
-call :dk_color %Gray% "Ban co the chon mot trong cac phien ban Office sau."
+call :dk_color %Gray% "Installed Office editions: %_oIds%"
+call :dk_color %Gray% "You can select one of the following Office Editions."
 if %winbuild% LSS 10240 (
-echo Cac san pham khong ho tro nhu 2019/2021/2024 da bi loai khoi danh sach.
+echo Unsupported products such as 2019/2021/2024 are excluded from this list.
 ) else (
 for %%# in (2019 2021 2024) do (
 find /i "%%#" "%SystemRoot%\Temp\%list%.txt" %nul1% || (
@@ -18846,9 +18866,9 @@ set targetedition!counter!=%%A
 
 %line%
 echo:
-echo [0]  Quay lai
+echo [0]  Go Back
 echo:
-call :dk_color %_Green% "Nhap so tuy chon bang ban phim va nhan Enter de xac nhan:"
+call :dk_color %_Green% "Enter an option number using your keyboard and press Enter to confirm:"
 set /p inpt=
 if "%inpt%"=="" goto :oe_editionchange
 if "%inpt%"=="0" (call :oe_tempcleanup & goto :oe_edition)
@@ -18866,12 +18886,12 @@ cls
 set suites=
 echo %list% | find /i "Suites" %nul1% && (
 set suites=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':getappnames\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getappnames\:.*';. ([scriptblock]::Create($f[1]))"
 if not exist %SystemRoot%\Temp\getAppIds.txt (
 %eline%
-echo Khong the tao danh sach ung dung kha dung.
+echo Failed to generate available apps list.
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
 )
 )
@@ -18899,6 +18919,11 @@ if defined Lync_st set Lync_st=Off
 set OneDrive_st=Off
 if defined suites (set Teams_st=Off) else (set Teams_st=)
 
+set OutlookForWindows_st=
+if %winbuild% GEQ 19041 if defined Outlook_st echo %targetedition% | find /i "O365" %nul1% && (
+set OutlookForWindows_st=Off
+)
+
 :oe_excludeapps
 
 cls
@@ -18906,47 +18931,49 @@ if not defined terminal mode 98, 32
 
 %line%
 echo:
-call :dk_color %Gray% "Phien ban muc tieu: %targetedition%"
-call :dk_color %Gray% "De loai bo cac ung dung ben duoi khoi viec cai dat, chuyen trang thai tu Bat sang Tat."
-if defined editedition call :dk_color %Gray% "Luu y: Trang thai Bat/Tat ben duoi khong phan anh trang thai hien tai cua cac ung dung da cai."
+call :dk_color %Gray% "Target edition: %targetedition%"
+call :dk_color %Gray% "To exclude the apps listed below from installation, toggle them from On to Off."
+if defined editedition call :dk_color %Gray% "Note: The On/Off status below does not reflect the current status of the installed apps."
 %line%
 if defined suites echo:
-if defined Access_st     echo [A] Access           : %Access_st%
-if defined Excel_st      echo [E] Excel            : %Excel_st%
-if defined OneNote_st    echo [N] OneNote          : %OneNote_st%
-if defined Outlook_st    echo [O] Outlook          : %Outlook_st%
-if defined PowerPoint_st echo [P] PowerPoint       : %PowerPoint_st%
-if defined Project_st    echo [J] Project          : %Project_st%
-if defined Publisher_st  echo [R] Publisher        : %Publisher_st%
-if defined Visio_st      echo [V] Visio            : %Visio_st%
-if defined Word_st       echo [W] Word             : %Word_st%
+if defined Access_st            echo [A] Access              : %Access_st%
+if defined Excel_st             echo [E] Excel               : %Excel_st%
+if defined OneNote_st           echo [N] OneNote             : %OneNote_st%
+if defined Outlook_st           echo [O] Outlook ^(Classic^)   : %Outlook_st%
+if defined PowerPoint_st        echo [P] PowerPoint          : %PowerPoint_st%
+if defined Project_st           echo [J] Project             : %Project_st%
+if defined Publisher_st         echo [R] Publisher           : %Publisher_st%
+if defined Visio_st             echo [V] Visio               : %Visio_st%
+if defined Word_st              echo [W] Word                : %Word_st%
 echo:
-if defined Lync_st       echo [L] SkypeForBusiness : %Lync_st%
-if defined OneDrive_st   echo [D] OneDrive         : %OneDrive_st%
-if defined Teams_st      echo [T] Teams            : %Teams_st%
+if defined Lync_st              echo [L] SkypeForBusiness    : %Lync_st%
+if defined OutlookForWindows_st echo [K] Outlook ^(New^)       : %OutlookForWindows_st%
+if defined OneDrive_st          echo [D] OneDrive            : %OneDrive_st%
+if defined Teams_st             echo [T] Teams               : %Teams_st%
 %line%
 echo:
-echo [1] Tiep tuc
-echo [0] Quay lai
+echo [1] Continue
+echo [0] Go Back
 %line%
 echo:
-call :dk_color %_Green% "Chon tuy chon bang ban phim:"
-choice /C:AENOPJRVWLDT10 /N
+call :dk_color %_Green% "Choose a menu option using your keyboard:"
+choice /C:AENOPJRVWLKDT10 /N
 set _el=!errorlevel!
-if !_el!==14 goto :oemenu
-if !_el!==13 call :excludelist & goto :oe_editionchangefinal
-if !_el!==12 if defined Teams_st      (if "%Teams_st%"=="Off"      (set Teams_st=ON)      else (set Teams_st=Off))
-if !_el!==11 if defined OneDrive_st   (if "%OneDrive_st%"=="Off"   (set OneDrive_st=ON)   else (set OneDrive_st=Off))
-if !_el!==10 if defined Lync_st       (if "%Lync_st%"=="Off"       (set Lync_st=ON)       else (set Lync_st=Off))
-if !_el!==9  if defined Word_st       (if "%Word_st%"=="Off"       (set Word_st=ON)       else (set Word_st=Off))
-if !_el!==8  if defined Visio_st      (if "%Visio_st%"=="Off"      (set Visio_st=ON)      else (set Visio_st=Off))
-if !_el!==7  if defined Publisher_st  (if "%Publisher_st%"=="Off"  (set Publisher_st=ON)  else (set Publisher_st=Off))
-if !_el!==6  if defined Project_st    (if "%Project_st%"=="Off"    (set Project_st=ON)    else (set Project_st=Off))
-if !_el!==5  if defined PowerPoint_st (if "%PowerPoint_st%"=="Off" (set PowerPoint_st=ON) else (set PowerPoint_st=Off))
-if !_el!==4  if defined Outlook_st    (if "%Outlook_st%"=="Off"    (set Outlook_st=ON)    else (set Outlook_st=Off))
-if !_el!==3  if defined OneNote_st    (if "%OneNote_st%"=="Off"    (set OneNote_st=ON)    else (set OneNote_st=Off))
-if !_el!==2  if defined Excel_st      (if "%Excel_st%"=="Off"      (set Excel_st=ON)      else (set Excel_st=Off))
-if !_el!==1  if defined Access_st     (if "%Access_st%"=="Off"     (set Access_st=ON)     else (set Access_st=Off))
+if !_el!==15 goto :oemenu
+if !_el!==14 call :excludelist & goto :oe_editionchangefinal
+if !_el!==13 if defined Teams_st             (if "%Teams_st%"=="Off"             (set Teams_st=ON)             else (set Teams_st=Off))
+if !_el!==12 if defined OneDrive_st          (if "%OneDrive_st%"=="Off"          (set OneDrive_st=ON)          else (set OneDrive_st=Off))
+if !_el!==11 if defined OutlookForWindows_st (if "%OutlookForWindows_st%"=="Off" (set OutlookForWindows_st=ON) else (set OutlookForWindows_st=Off))
+if !_el!==10 if defined Lync_st              (if "%Lync_st%"=="Off"              (set Lync_st=ON)              else (set Lync_st=Off))
+if !_el!==9  if defined Word_st              (if "%Word_st%"=="Off"              (set Word_st=ON)              else (set Word_st=Off))
+if !_el!==8  if defined Visio_st             (if "%Visio_st%"=="Off"             (set Visio_st=ON)             else (set Visio_st=Off))
+if !_el!==7  if defined Publisher_st         (if "%Publisher_st%"=="Off"         (set Publisher_st=ON)         else (set Publisher_st=Off))
+if !_el!==6  if defined Project_st           (if "%Project_st%"=="Off"           (set Project_st=ON)           else (set Project_st=Off))
+if !_el!==5  if defined PowerPoint_st        (if "%PowerPoint_st%"=="Off"        (set PowerPoint_st=ON)        else (set PowerPoint_st=Off))
+if !_el!==4  if defined Outlook_st           (if "%Outlook_st%"=="Off"           (set Outlook_st=ON)           else (set Outlook_st=Off))
+if !_el!==3  if defined OneNote_st           (if "%OneNote_st%"=="Off"           (set OneNote_st=ON)           else (set OneNote_st=Off))
+if !_el!==2  if defined Excel_st             (if "%Excel_st%"=="Off"             (set Excel_st=ON)             else (set Excel_st=Off))
+if !_el!==1  if defined Access_st            (if "%Access_st%"=="Off"            (set Access_st=ON)            else (set Access_st=Off))
 goto :oe_excludeapps
 
 :excludelist
@@ -18963,6 +18990,7 @@ publisher
 visio
 word
 lync
+outlookforwindows
 onedrive
 teams
 ) do (
@@ -19021,8 +19049,8 @@ if /i "%_lang%"=="%%#" set langmatched=1
 )
 if not defined langmatched (
 %eline%
-echo Ngon ngu %_lang% khong kha dung cho ung dung Project/Visio.
-call :dk_color %Blue% "Cai dat Office voi ngon ngu ho tro cho Project/Visio tu link ben duoi."
+echo %_lang% language is not available for Project/Visio apps.
+call :dk_color %Blue% "Install Office in the supported language for Project/Visio from the below URL."
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto :oe_goback
@@ -19043,7 +19071,7 @@ set "c2rcommand=!c2rcommand! productstoremove=AllProducts"
 )
 
 echo:
-echo Dang chay lenh ben duoi, vui long cho...
+echo Running the below command, please wait...
 echo:
 echo %c2rcommand%
 %c2rcommand%
@@ -19079,15 +19107,15 @@ echo %_AudienceData% | find /i "LTSC" %nul% && set suggestchannel=Production::CC
 )
 
 if defined suggestchannel (
-call :dk_color %Gray% "Phat hien khong khop giua kenh cap nhat va san pham da cai dat."
-call :dk_color %Blue% "Khuyen nghi doi kenh cap nhat sang [!suggestchannel!] tu menu truoc."
+call :dk_color %Gray% "Mismatch found in update channel and installed product."
+call :dk_color %Blue% "It is recommended to change the update channel to [!suggestchannel!] from the previous menu."
 )
 echo:
 )
-call :dk_color %Gray% "De kich hoat Office, chay tuy chon kich hoat tu menu chinh."
+call :dk_color %Gray% "To activate Office, run the activation option from the main menu."
 ) else (
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 call :oe_tempcleanup
@@ -19100,7 +19128,7 @@ goto :oe_goback
 :oe_editedition
 
 cls
-title  Them/Go ung dung %masver%
+title  Add/Remove Apps %masver%
 
 call :oe_chkinternet
 if not defined _int (
@@ -19123,7 +19151,7 @@ set targetedition=
 
 %line%
 echo:
-call :dk_color %Gray% "Ban co the chinh sua [them/go ung dung] mot trong cac phien ban Office sau."
+call :dk_color %Gray% "You can edit [add/remove apps] one of the following Office editions."
 %line%
 echo:
 
@@ -19135,9 +19163,9 @@ set targetedition!counter!=%%A
 
 %line%
 echo:
-echo [0]  Quay lai
+echo [0]  Go Back
 echo:
-call :dk_color %_Green% "Nhap so tuy chon bang ban phim va nhan Enter de xac nhan:"
+call :dk_color %_Green% "Enter an option number using your keyboard and press Enter to confirm:"
 set /p inpt=
 if "%inpt%"=="" goto :oe_editedition
 if "%inpt%"=="0" goto :oemenu
@@ -19159,7 +19187,7 @@ goto :oe_excludeappspre
 
 :oe_removeedition
 
-title  Go phien ban Office %masver%
+title  Remove Office editions %masver%
 
 call :ch_getinfo
 
@@ -19173,8 +19201,8 @@ for %%A in (%_oIds%) do (set /a counter+=1)
 
 if !counter! LEQ 1 (
 echo:
-echo Chi co san pham "%_oIds%" duoc cai dat.
-echo Tuy chon nay chi kha dung khi nhieu san pham duoc cai dat.
+echo Only "%_oIds%" product is installed.
+echo This option is available only when multiple products are installed.
 goto :oe_goback
 )
 
@@ -19187,7 +19215,7 @@ set targetedition=
 
 %line%
 echo:
-call :dk_color %Gray% "Ban co the go cai dat mot trong cac phien ban Office sau."
+call :dk_color %Gray% "You can uninstall one of the following Office editions."
 %line%
 echo:
 
@@ -19199,9 +19227,9 @@ set targetedition!counter!=%%A
 
 %line%
 echo:
-echo [0]  Quay lai
+echo [0]  Go Back
 echo:
-call :dk_color %_Green% "Nhap so tuy chon bang ban phim va nhan Enter de xac nhan:"
+call :dk_color %_Green% "Enter an option number using your keyboard and press Enter to confirm:"
 set /p inpt=
 if "%inpt%"=="" goto :oe_removeedition
 if "%inpt%"=="0" goto :oemenu
@@ -19218,7 +19246,7 @@ call :oe_getlangs %targetedition%
 set "c2rcommand="%_c2rExe%" platform=%_oArch% productstoremove=%targetedition%.16_%_allLangs%"
 
 echo:
-echo Dang chay lenh ben duoi, vui long cho...
+echo Running the below command, please wait...
 echo:
 echo %c2rcommand%
 %c2rcommand%
@@ -19226,7 +19254,7 @@ echo %c2rcommand%
 if %errorlevel% NEQ 0 (
 echo:
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 goto :oe_goback
@@ -19237,7 +19265,7 @@ goto :oe_goback
 
 :oe_changeupdchnl
 
-title  Doi kenh cap nhat Office %masver%
+title  Change Office update channel %masver%
 call :ch_getinfo
 
 cls
@@ -19253,14 +19281,14 @@ goto :oe_goback
 if %winbuild% LSS 10240 (
 echo %_oIds% | findstr "2019 2021 2024" %nul% && (
 %eline%
-echo Phien ban Office da cai dat: %_oIds%
-echo Phien ban Office khong ho tro da cai dat tren Windows build %winbuild%.
+echo Installed Office editions: %_oIds%
+echo Unsupported Office edition is installed on your Windows build version %winbuild%.
 goto :oe_goback
 )
 if defined ltscfound (
 %eline%
-echo Kenh cap nhat Office da cai dat: %ltsc19%%ltsc21%%ltsc24%
-echo Kenh cap nhat Office khong ho tro da cai dat tren Windows build %winbuild%.
+echo Installed Office update channel: %ltsc19%%ltsc21%%ltsc24%
+echo Unsupported Office update channel is installed on your Windows build version %winbuild%.
 goto :oe_goback
 )
 )
@@ -19277,7 +19305,7 @@ set targetchannel=
 %line%
 echo:
 call :dk_color %Gray% "Installed update channel: %_AudienceData%, %_version%, Client: %_clversion%"
-call :dk_color %Gray% "Phien ban Office da cai dat: %_oIds%"
+call :dk_color %Gray% "Installed Office editions: %_oIds%"
 %line%
 echo:
 
@@ -19322,10 +19350,10 @@ if defined bypass set bypassFFN=!bypassFFN!%%A
 
 %line%
 echo:
-echo [R]  Tim hieu ve kenh cap nhat
-echo [0]  Quay lai
+echo [R]  Learn about update channels
+echo [0]  Go back
 echo:
-call :dk_color %_Green% "Nhap so tuy chon bang ban phim va nhan Enter de xac nhan:"
+call :dk_color %_Green% "Enter an option number using your keyboard and press Enter to confirm:"
 set /p inpt=
 if "%inpt%"=="" goto :oe_changeupdchnl
 if "%inpt%"=="0" goto :oemenu
@@ -19343,28 +19371,28 @@ if not defined terminal mode 105, 32
 ::  Get build number for the target FFN, using build number with OfficeC2RClient.exe command to trigger updates provides accurate results
 
 set build=
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':getbuild\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set build=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getbuild\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set build=%%a)
 echo "%build%" | find /i "16." %nul% || set build=
 
 echo:
 for /f "tokens=1 delims=-" %%A in ("%targetchannel%") do (echo Target update channel: %%A)
-echo So ban build muc tieu: %build%
+echo Target build number: %build%
 echo: %bypassFFN% | find /i "%targetFFN%" %nul% && goto :oe_changeunoff
 
 call :oe_cleanupreg
 
 if not defined build (
-if %winbuild% GEQ 9200 call :dk_color %Gray% "Khong the phat hien so ban build cho FFN muc tieu."
+if %winbuild% GEQ 9200 call :dk_color %Gray% "Failed to detect build number for the target FFN."
 set "updcommand="%_c2rCexe%" /update user"
 ) else (
 set "updcommand="%_c2rCexe%" /update user updatetoversion=%build%"
 )
-echo Dang chay lenh ben duoi de kich hoat cap nhat...
+echo Running the below command to trigger updates...
 echo:
 echo %updcommand%
 %updcommand%
 echo:
-echo Xem trang ho tro tai - %mas%troubleshoot
+echo Check this webpage for help - %mas%troubleshoot
 goto :oe_goback
 
 ::=======================
@@ -19380,16 +19408,16 @@ echo %targetchannel% | find /i "2024 VL" %nul% && (for %%A in (%_oIds%) do (echo
 
 if defined abortchange (
 %eline%
-echo Phat hien khong khop giua san pham Office va kenh cap nhat muc tieu. Dang huy...
-echo San pham Office khong vinh vien khong duoc ho tro voi kenh cap nhat Perpetual VL.
+echo Mismatch found in installed Office products and target update channel. Aborting...
+echo Non-perpetual Office products are not suppported with Perpetual VL update channels.
 goto :oe_goback
 )
 
 if not defined build (
 %eline%
-call :dk_color %Red% "Khong the phat hien so ban build cho FFN muc tieu."
+call :dk_color %Red% "Failed to detect build number for the target FFN."
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
 )
 
@@ -19402,7 +19430,7 @@ echo %targetchannel% | find /i "2019 VL" %nul% && (
 for %%A in (en-gb es-mx fr-ca) do (
 echo %_allLangs% | find /i "%%A" %nul% && (
 %eline%
-echo Ngon ngu [%%A] khong ho tro tren kenh cap nhat Office 2019 Perpetual VL. Dang huy...
+echo [%%A] language is not supported on the Office 2019 Perpetual VL update channel. Aborting...
 goto :oe_goback
 )
 )
@@ -19413,9 +19441,9 @@ set "c2rclientupdate=!c2rcommand! scenario=CLIENTUPDATE"
 
 if %clverchk% LSS %buildchk% (
 echo:
-call :dk_color %Blue% "Khong duoc dung thao tac truoc khi hoan tat..."
+call :dk_color %Blue% "Do not terminate the operation before it completes..."
 echo:
-echo Dang cap nhat Office C2R client bang lenh ben duoi, vui long cho...
+echo Updating Office C2R client with the command below, please wait...
 echo:
 echo %c2rclientupdate%
 %c2rclientupdate%
@@ -19424,15 +19452,15 @@ for /l %%i in (1,1,30) do (if !clverchk! LSS %buildchk% (call :ch_getinfo&timeou
 
 if %clverchk% LSS %buildchk% (
 echo:
-call :dk_color %Red% "That bai khi cap nhat Office C2R client. Dang huy..."
+call :dk_color %Red% "Failed to update Office C2R client. Aborting..."
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
 )
 
 call :oe_cleanupreg
 
-echo Dang chay lenh ben duoi de doi kenh cap nhat, vui long cho...
+echo Running the below command to change update channel, please wait...
 echo:
 echo %c2rcommand%
 %c2rcommand%
@@ -19441,10 +19469,10 @@ timeout /t 10 %nul%
 
 echo:
 if %errorcode% EQU 0 (
-call :dk_color %Gray% "Bay gio chay tuy chon kich hoat Office tu menu chinh."
+call :dk_color %Gray% "Now run the Office activation option from the main menu."
 ) else (
 set fixes=%fixes% %mas%troubleshoot
-call :dk_color2 %Blue% "Xem trang ho tro tai - " %_Yellow% " %mas%troubleshoot"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
 )
 
 ::========================================================================================================================================
@@ -19455,18 +19483,18 @@ call :oe_tempcleanup
 
 echo:
 if defined fixes (
-call :dk_color %White% "Lam theo TAT CA cac dong mau xanh phia tren.   "
-call :dk_color2 %Blue% "Nhan [1] de mo trang Ho tro " %Gray% " Nhan [0] de bo qua"
+call :dk_color %White% "Follow ALL the ABOVE blue lines.   "
+call :dk_color2 %Blue% "Press [1] to Open Support Webpage " %Gray% " Press [0] to Ignore"
 choice /C:10 /N
 if !errorlevel!==2 goto :oemenu
 if !errorlevel!==1 (start %selfgit% & start %github% & for %%# in (%fixes%) do (start %%#))
 )
 
 if defined terminal (
-call :dk_color %_Yellow% "Nhan phim [0] de quay lai..."
+call :dk_color %_Yellow% "Press [0] key to go back..."
 choice /c 0 /n
 ) else (
-call :dk_color %_Yellow% "Nhan phim bat ky de quay lai..."
+call :dk_color %_Yellow% "Press any key to go back..."
 pause %nul1%
 )
 goto :oemenu
@@ -19626,8 +19654,8 @@ if !errorlevel!==0 (set _int=1)
 
 if not defined _int (
 %eline%
-call :dk_color %Red% "Khong co ket noi Internet."
-call :dk_color %Blue% "Can ket noi Internet cho thao tac nay."
+call :dk_color %Red% "Internet is not connected."
+call :dk_color %Blue% "Internet is required for this operation."
 )
 exit /b
 
@@ -19750,5 +19778,3 @@ if ($appIdsList.Count -gt 0) {
 ::========================================================================================================================================
 ::
 :: Leave empty line below
-
-

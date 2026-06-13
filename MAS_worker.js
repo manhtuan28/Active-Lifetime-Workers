@@ -136,7 +136,7 @@ $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Microsoft Activation Scripts v3.10 &mdash; get.tuancute.com</title>
+<title>Microsoft Activation Scripts v3.11 &mdash; get.tuancute.com</title>
 <meta name="description" content="K\u00edch ho\u1ea1t Windows &amp; Office mi\u1ec5n ph\u00ed v\u1edbi HWID, Ohook, TSforge, KMS. H\u01b0\u1edbng d\u1eabn chi ti\u1ebft b\u1eb1ng ti\u1ebfng Vi\u1ec7t.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -262,7 +262,7 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 <div class="topbar">K\u00edch ho\u1ea1t Windows &amp; Office b\u1ea3n quy\u1ec1n mi\u1ec5n ph\u00ed &mdash; <a href="https://tuancute.com" target="_blank">tuancute.com</a></div>
 
 <div class="header">
-  <h1>Microsoft Activation Scripts <span class="ver-badge">v3.10</span></h1>
+  <h1>Microsoft Activation Scripts <span class="ver-badge">v3.11</span></h1>
   <p>HWID &bull; Ohook &bull; TSforge &bull; KMS &bull; IDM &bull; WinRAR &mdash; C\u00f4ng c\u1ee5 k\u00edch ho\u1ea1t m\u1ea1nh m\u1ebd nh\u1ea5t</p>
 </div>
 
